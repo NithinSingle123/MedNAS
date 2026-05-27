@@ -87,10 +87,11 @@ mininas/training/dataset.py
 ```
 
 ### Problems Faced
-[Write issues here]
+Faced some syntax issue 
+Issues related to the compatibility of pytorch and matplotlib
 
 ### Solutions
-[Write solutions]
+enabled virtual environment to deal with it and now it works fine
 
 ---
 
