@@ -3,3 +3,6 @@ __pycache__/
 .env
 venv/
 .ipynb_checkpoints/
+venv/
+mininas/training/data/
+*.tar.gz
