@@ -95,6 +95,10 @@ enabled virtual environment to deal with it and now it works fine
 
 ---
 
+## 2 layer Neural network implementation
+
+
+---
 ## Baseline CNN
 
 ### Architecture

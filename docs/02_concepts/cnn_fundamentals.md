@@ -526,22 +526,603 @@ This balance is fundamental in machine learning.
 
 ## Optimization
 
+the first idea on the raw though process would be use all the solutions and substitute them in your loss function. But SPOILER ALERT this algo the so called "RANDOM SEARCH" is shit and should not be used.
+
+```python
+# assume X_train is the data where each column is an example (e.g. 3073 x 50000)
+# assume Y_train are the labels (e.g. ID array of 50000)
+# assume the function L evaluates the loss function
+
+bestloss = float("inf") # Python assigns the highest possible float value
+for num in xrange(1000):
+	w = np.random.randn(10, 3073) * 0.0001 # generate random parameters
+	loss = L(X_train, Y_train, W) # get the loss over the entire training set
+	if loss < bestloss: # keep track of the best solution
+		bestloss = loss
+		bestW = W
+	print 'in attempt %d the loss was %f, best %f' %(num, lossm bestloss)
+	
+	
+# prints:
+# in attempt 0 the loss was 9.40, best 9.40
+# in attempt 1 the loss was 8.90, best 8.90
+# in attempt 2 the loss was 9.04, best 8.90
+# continues for 1000 lines
+```
 
 
+Better than the above is to use the local geometry. you can feel where you are going with little steps you take.
+
+## Follow the slope
+
+In 1-dimension the derivative of a function:
+
+$$
+\frac{df(x)}{dx}
+=
+\lim_{h \to 0}
+\frac{f(x+h)-f(x)}{h}
+$$
+<mark style="background: #FFF3A3A6;">
+In multiple dimensions the gradient is the vector of (partial derivatives) along each dimension</mark>
+
+The slope in any direction is the dot product of the direction with the gradient. <mark style="background: #FFB8EBA6;">The direction of steepest descent is the negative gradient.</mark>
+
+# Numerical Gradient Approximation
+
+## Current Weights
+
+$$
+W =
+\begin{bmatrix}
+0.34 \\
+-1.11 \\
+0.78 \\
+0.12 \\
+0.55 \\
+2.81 \\
+-3.10 \\
+-1.50 \\
+0.33
+\end{bmatrix}
+$$
+
+Current loss:
+
+$$
+L(W) = 1.25347
+$$
+
+---
+
+## Perturb One Dimension
+
+Add a small value $h$ to one parameter:
+
+$$
+W + h =
+\begin{bmatrix}
+0.34 \\
+-1.11 \\
+0.78 + 0.0001 \\
+0.12 \\
+0.55 \\
+2.81 \\
+-3.10 \\
+-1.50 \\
+0.33
+\end{bmatrix}
+$$
+
+New loss:
+
+$$
+L(W+h) = 1.25347
+$$
+
+---
+
+# Numerical Gradient Formula
+
+$$
+\frac{d f(x)}{dx}
+=
+\lim_{h \to 0}
+\frac{f(x+h)-f(x)}{h}
+$$
+
+---
+
+# Gradient Vector
+
+$$
+dW =
+\begin{bmatrix}
+-2.5 \\
+0.6 \\
+? \\
+? \\
+? \\
+? \\
+? \\
+?
+\end{bmatrix}
+$$
+
+---
+
+# Key Intuition
+
+A gradient measures:
+
+> How much the loss changes when a parameter changes slightly.
+
+Each weight dimension is perturbed independently to estimate:
+- sensitivity
+- direction of improvement
+- optimization behavior
+
+---
+
+# Why This Matters
+
+Numerical gradients are commonly used to:
+- debug backpropagation
+- verify gradient correctness
+- detect implementation bugs
+
+This process is called Gradient checking
+
+This process might actually be super slow if its a large CNN and this parameter W will not 10 entries like here, it might have millions. so practically you never wanna calculate gradients
+
+# Analytic Gradient Computation
+
+The loss is a function of the weights:
+
+$$
+L =
+\frac{1}{N}
+\sum_{i=1}^{N} L_i
++
+\sum_k W_k^2
+$$
+
+---
+
+# Multiclass SVM Loss
+
+$$
+L_i =
+\sum_{j \ne y_i}
+\max(0, s_j - s_{y_i} + 1)
+$$
+
+---
+
+# Score Function
+
+$$
+s = f(x;W) = Wx
+$$
+
+---
+
+# Goal
+
+We want to compute:
+
+$$
+\nabla_W L
+$$
+
+which represents:
+
+> the gradient of the loss with respect to the weights.
+
+---
+
+# Key Idea
+
+Instead of:
+- changing each weight individually,
+- recomputing the loss repeatedly,
+
+we use:
+# calculus
+
+to compute the gradient directly.
+
+This is called:
+
+$$
+\text{Analytic Gradient}
+$$
+
+---
+
+# Why Analytic Gradients Matter
+
+Numerical gradients are:
+- slow
+- computationally expensive
+- impractical for large neural networks
+
+Analytic gradients are:
+- fast
+- exact
+- scalable
+
+---
+
+# Core Insight
+
+Neural network training depends on:
+
+$$
+\nabla_W L
+$$
+
+because gradients tell us:
+- which direction reduces loss
+- how strongly each parameter affects predictions
+
+---
+
+# Relation to Backpropagation
+
+Backpropagation is essentially:
+- efficient analytic gradient computation
+- using the chain rule repeatedly through layers
+
+---
+
+# Why This Matters for Deep Learning
+
+Without analytic gradients:
+- training deep networks would be extremely slow
+- optimization would become impractical
+
+Backpropagation makes modern deep learning possible.
+
+---
+
+# Important Transition
+
+The workflow evolves from:
+
+## Numerical Gradient
+
+$$
+\frac{f(x+h)-f(x)}{h}
+$$
+
+to:
+
+## Analytic Gradient
+
+$$
+\nabla_W L
+$$
+
+which is:
+- mathematically derived
+- much faster
+- used during real training
 
 
+## Gradient Descent
+
+So gradient descent is first we initialize our W as some random thing while true we will update our loss and gradient and we will update our weights in the opposite of the gradient direction, and doing this will converge your network and give you the desired optimal solution
+
+```python
+# Vanilla Gradient Descent
+
+while True:
+	weights_grad = evaluate_gradient(loss_fun, data, weights)
+	weights += - step_size * wights_grad # perform parameter update
+```
+
+step size also called the learning rate is one of the single most important parameter that you have to set in practice.
 
 
+# Stochastic Gradient Descent (SGD)
+
+## Total Loss Function
+
+$$
+L(W) =
+\frac{1}{N}
+\sum_{i=1}^{N}
+L_i(x_i, y_i, W)
++
+\lambda R(W)
+$$
+
+---
+
+# Gradient of the Loss
+
+$$
+\nabla_W L(W) =
+\frac{1}{N}
+\sum_{i=1}^{N}
+\nabla_W L_i(x_i, y_i, W)
++
+\lambda \nabla_W R(W)
+$$
+
+---
+
+# Problem with Full Gradient Computation
+
+Computing gradients over:
+- the entire dataset
+- every iteration
+
+becomes extremely expensive when:
+
+$$
+N
+$$
+
+is very large.
+
+---
+
+# Solution — Minibatch Approximation
+
+Instead of using:
+- all training examples,
+
+SGD uses:
+# a minibatch
+
+of examples to approximate the gradient.
+
+Typical minibatch sizes:
+
+$$
+32,\ 64,\ 128
+$$
+
+---
+
+# Vanilla Minibatch Gradient Descent
+
+```python
+while True:
+
+    # sample minibatch
+    data_batch = sample_training_data(data, 256)
+
+    # compute gradient
+    weights_grad = evaluate_gradient(
+        loss_function,
+        data_batch,
+        weights
+    )
+
+    # update weights
+    weights += -step_size * weights_grad
+```
+
+---
+
+# Key Intuition
+
+SGD repeatedly:
+1. samples a small batch
+2. computes approximate gradients
+3. updates weights
+4. moves toward lower loss
+
+---
+
+# Why SGD Works
+
+Even though minibatch gradients are noisy:
+- they are much faster
+- require less memory
+- still approximate the true optimization direction
+
+This makes deep learning scalable.
+
+---
+
+# Important Components
+
+| Component | Meaning |
+|---|---|
+| Minibatch | Small subset of training data |
+| Gradient | Direction of steepest increase |
+| Step Size | Learning rate |
+| Weight Update | Parameter optimization step |
+
+---
+
+# Weight Update Rule
+
+$$
+W \leftarrow W - \eta \nabla_W L
+$$
+
+where:
+
+| Symbol | Meaning |
+|---|---|
+| $W$ | weights |
+| $\eta$ | learning rate |
+| $\nabla_W L$ | gradient |
+
+---
+
+# Why This Matters
+
+Modern deep learning relies heavily on:
+# stochastic optimization
+
+because full-dataset optimization is often:
+- too slow
+- too memory-intensive
+- computationally impractical
+
+---
+
+# Connection to MedNAS
+
+Future NAS systems will repeatedly:
+- train architectures
+- compute gradients
+- optimize weights
+- evaluate performance
+
+Understanding SGD is foundational for:
+- architecture search
+- optimization dynamics
+- training efficiency
+- deployment-aware learning
 
 
+# Image Features — Motivation
 
+## Problem
 
+Some datasets cannot be separated using a simple linear classifier.
 
+Example:
+- red points and blue points overlap in the original coordinate space
+- a straight line cannot separate them
 
+This means the data is:
+# not linearly separable
 
+---
 
+# Feature Transformation
 
+Apply a transformation:
 
+$$
+f(x,y) = (r(x,y), \theta(x,y))
+$$
+
+This converts:
+- Cartesian coordinates
+- into polar-coordinate-style features
+
+---
+
+# Key Idea
+
+Instead of changing:
+- the classifier,
+
+we change:
+# the representation of the data.
+
+---
+
+# Before Feature Transformation
+
+In original space:
+
+$$
+(x,y)
+$$
+
+the classes overlap.
+
+A linear classifier struggles because:
+- boundaries are complex
+- relationships are nonlinear
+
+---
+
+# After Feature Transformation
+
+In transformed feature space:
+
+$$
+(r,\theta)
+$$
+
+the data becomes easier to separate.
+
+Now:
+- a simple linear classifier works
+
+---
+
+# Important Insight
+
+Good features can make:
+- difficult problems simple
+
+Bad features can make:
+- simple problems difficult
+
+---
+
+# Core Machine Learning Principle
+
+A classifier is only as good as:
+# the representation of the data.
+
+Feature engineering transforms data into forms where:
+- patterns become easier to learn
+- separation becomes simpler
+- optimization improves
+
+---
+
+# Relation to Neural Networks
+
+Deep learning automates:
+# feature extraction
+
+Instead of manually designing transformations,
+CNNs learn hierarchical features automatically.
+
+Examples:
+- edges
+- textures
+- shapes
+- object parts
+- semantic patterns
+
+---
+
+# Why This Matters
+
+The power of deep learning comes largely from:
+# representation learning
+
+not just classification itself.
+
+---
+
+# Connection to CNNs
+
+Convolution layers learn feature maps that progressively transform:
+- raw pixels
+- into meaningful representations
+
+This enables:
+- linear separability
+- improved classification
+- hierarchical understanding
+
+---
+
+# Connection to MedNAS
+
+Future NAS systems may optimize:
+- feature extraction strategies
+- representation quality
+- architectural transformations
+
+because architecture design strongly affects:
+# learned feature representations.
 
 
 
