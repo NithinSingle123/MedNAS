@@ -33,3 +33,416 @@ A ConvNet is going to be a sequence of these convolutional layers stacked on top
 
 ![[Excalidraw/filterhierarchy.excalidraw|12000]]
 
+![[Excalidraw/convnetmodel.excalidraw]]
+
+This is how a CNN would look like, we are going to pass it through the above layers linear, non linear and pooling layer.
+
+![[Excalidraw/outputsize.excalidraw]]
+
+## Output size: (N - F) / stride + 1 
+
+e.g. N=7, F=3:
+stride 1 --> (7-3)/1+1 = 5
+stride 2 --> (7-3)/2+1 = 3
+stride 3 --> (7-3)/3+1 = 2.33 :\
+
+## In practice: Common to zero pad the border
+
+![[Excalidraw/zeropad.excalidraw]]
+
+so here when we previously took stride as 3 the output could be asymmetric but now to tackle that limitation we padded the boundary with zero and now if we look at this and stride through it with stride 3 with our 3x3 filter then we can definitely accommodate.
+
+Some of the common filter sizes you come across is F = 3, 5, 7
+if 3 zero pad with 1
+if 5 zero pad with 2
+if 7 zero pad with 3
+
+We do this because we dont want the image shrinking each iteration and also losing some features along the edges
+
+
+### Example
+
+Input volume: 32x32x3
+10 5x5 filters with stride 1, pad 2
+
+Output volume size:
+(36-5)/1+1 = 32 = 32x32x10
+
+No.of parameters in this layer:
+
+(5x5x3+1)10 = 760
+here the 1 is the bias term that exists
+
+
+# Convolution Layer Summary
+
+A convolution layer:
+
+- Accepts an input volume of size
+
+$$
+W_1 \times H_1 \times D_1
+$$
+
+---
+
+## Hyperparameters
+
+A convolution layer requires four hyperparameters:
+
+- Number of filters:
+
+$$
+K
+$$
+
+- Filter spatial extent (kernel size):
+
+$$
+F
+$$
+
+- Stride:
+
+$$
+S
+$$
+
+- Zero-padding:
+
+$$
+P
+$$
+
+---
+
+## Output Volume
+
+The convolution layer produces an output volume of size:
+
+$$
+W_2 \times H_2 \times D_2
+$$
+
+where:
+
+$$
+W_2=\frac{W_1-F+2P}{S}+1
+$$
+
+$$
+H_2=\frac{H_1-F+2P}{S}+1
+$$
+
+(width and height are computed identically by symmetry)
+
+$$
+D_2=K
+$$
+
+---
+
+## Number of Parameters
+
+With parameter sharing:
+
+Each filter contains
+
+$$
+F \times F \times D_1
+$$
+
+weights.
+
+Therefore, the total number of weights is:
+
+$$
+(F \times F \times D_1)\times K
+$$
+
+and the layer contains:
+
+$$
+K
+$$
+
+bias terms.
+
+---
+
+## Output Depth Slices
+
+In the output volume:
+
+- The \(d^{th}\) depth slice has size:
+
+$$
+W_2 \times H_2
+$$
+
+- It is produced by convolving the \(d^{th}\) filter over the input volume using stride:
+
+$$
+S
+$$
+
+- Then adding the corresponding bias term:
+
+$$
+b_d
+$$
+
+---
+
+## Key Takeaways
+
+### Input
+
+$$
+W_1 \times H_1 \times D_1
+$$
+
+### Hyperparameters
+
+$$
+K,\;F,\;S,\;P
+$$
+
+### Output
+
+$$
+W_2 \times H_2 \times K
+$$
+
+### Parameter Count
+
+$$
+(F \times F \times D_1)\times K + K
+$$
+
+(weights + biases)
+
+---
+
+
+# Example: CONV layer in Torch
+# Spatial Convolution
+
+```lua
+module = nn.SpatialConvolution(
+    nInputPlane,
+    nOutputPlane,
+    kW,
+    kH,
+    [dW],
+    [dH],
+    [padW],
+    [padH]
+)
+```
+
+Applies a 2D convolution over an input image composed of several input planes.
+
+The input tensor in `forward(input)` is expected to be a 3D tensor:
+
+```text
+nInputPlane × height × width
+```
+
+## Parameters
+
+- `nInputPlane`
+  - Number of expected input planes in the image given to `forward()`
+
+- `nOutputPlane`
+  - Number of output planes the convolution layer will produce
+
+- `kW`
+  - Kernel width of the convolution
+
+- `kH`
+  - Kernel height of the convolution
+
+- `dW`
+  - Step of the convolution in the width dimension
+  - Default: `1`
+
+- `dH`
+  - Step of the convolution in the height dimension
+  - Default: `1`
+
+- `padW`
+  - Additional zeros added per width to the input planes
+  - Default: `0`
+  - Common choice:
+
+```text
+(kW - 1) / 2
+```
+
+- `padH`
+  - Additional zeros added per height to the input planes
+  - Default: `0`
+  - Common choice:
+
+```text
+(kH - 1) / 2
+```
+
+Note that depending on the size of your kernel, several of the last columns or rows of the input image might be lost. It is up to the user to add proper padding.
+
+If the input image is a 3D tensor:
+
+```text
+nInputPlane × height × width
+```
+
+the output image size will be:
+
+```text
+nOutputPlane × oheight × owidth
+```
+
+where
+
+$$
+owidth=
+\left\lfloor
+\frac{width+2\times padW-kW}{dW}+1
+\right\rfloor
+$$
+
+$$
+oheight=
+\left\lfloor
+\frac{height+2\times padH-kH}{dH}+1
+\right\rfloor
+$$
+
+
+# CONV layer in Caffe
+
+```python
+layer {  
+name: "conv1"  
+type: "Convolution"  
+bottom: "data"  
+top: "conv1"  
+  
+# learning rate and decay multipliers for the filters  
+param { lr_mult: 1 decay_mult: 1 }  
+  
+# learning rate and decay multipliers for the biases  
+param { lr_mult: 2 decay_mult: 0 }  
+  
+convolution_param {  
+	num_output: 96 # learn 96 filters  
+	kernel_size: 11 # each filter is 11x11  
+	stride: 4 # step 4 pixels between each filter application  
+  
+	weight_filler {  
+		type: "gaussian" # initialize the filters from a Gaussian  
+		std: 0.01 # distribution with stdev 0.01 (default mean: 0)  
+}  
+  
+	bias_filler {  
+		type: "constant" # initialize the biases to zero (0)  
+		value: 0  
+}  
+}  
+}
+```
+
+## Pooling Layer
+
+they make the representations smaller and more manageable. And operates over each activation map independently.
+
+Meaning it downsamples a large image to a smaller one
+
+Note: this doesnt do anything in the depth we are only downsampling spatially and the input depth still remains same as output depth.
+
+### One such method is Max Pooling
+
+![[Excalidraw/maxpooling.excalidraw|12000]]
+
+It is typical in pooling to have a stride such that it does not overlap.
+
+We choose max pooling commonly because it gives a higher value
+
+# Pooling Layer Summary
+
+- Accepts an input volume of size:
+
+$$
+W_1 \times H_1 \times D_1
+$$
+
+---
+
+## Hyperparameters
+
+A pooling layer requires two hyperparameters:
+
+- Spatial extent:
+
+$$
+F
+$$
+
+- Stride:
+
+$$
+S
+$$
+
+---
+
+## Output Volume
+
+Produces an output volume of size:
+
+$$
+W_2 \times H_2 \times D_2
+$$
+
+where:
+
+$$
+W_2 = \frac{W_1 - F}{S} + 1
+$$
+
+$$
+H_2 = \frac{H_1 - F}{S} + 1
+$$
+
+$$
+D_2 = D_1
+$$
+
+---
+
+## Parameters
+
+Pooling layers introduce:
+
+$$
+0
+$$
+
+trainable parameters because they compute a fixed function of the input.
+
+---
+
+## Notes
+
+- It is not common to use zero-padding for pooling layers.
+- Pooling reduces spatial dimensions while preserving depth.
+- Common pooling operations:
+  - Max Pooling
+  - Average Pooling
+---
+
+Typically people dont use zero padding here because it is just downsampling
+
+## Fully Connected Layer
+
