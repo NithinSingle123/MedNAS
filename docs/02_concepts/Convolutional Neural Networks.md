@@ -446,3 +446,236 @@ Typically people dont use zero padding here because it is just downsampling
 
 ## Fully Connected Layer
 
+# Fully Connected (FC) Layer
+
+## Definition
+
+A Fully Connected Layer (Dense Layer) is a neural network layer in which every neuron is connected to every neuron in the previous layer.
+
+Unlike convolution layers, FC layers do not preserve spatial information.
+
+---
+
+## Mathematical Representation
+
+Given:
+
+$$
+x \in \mathbb{R}^{n}
+$$
+
+Input vector:
+
+$$
+x =
+\begin{bmatrix}
+x_1 \\
+x_2 \\
+\vdots \\
+x_n
+\end{bmatrix}
+$$
+
+Weight matrix:
+
+$$
+W \in \mathbb{R}^{m \times n}
+$$
+
+Bias vector:
+
+$$
+b \in \mathbb{R}^{m}
+$$
+
+Output:
+
+$$
+y = Wx + b
+$$
+
+After applying an activation:
+
+$$
+a = \sigma(Wx+b)
+$$
+
+---
+
+## Intuition
+
+Each output neuron:
+
+- Sees the entire input.
+- Learns a weighted combination of all input features.
+- Produces a higher-level representation.
+
+---
+
+## Example
+
+Suppose:
+
+$$
+x =
+\begin{bmatrix}
+1 \\
+2 \\
+3
+\end{bmatrix}
+$$
+
+and
+
+$$
+W=
+\begin{bmatrix}
+0.1 & 0.5 & 0.2 \\
+0.3 & 0.7 & 0.4
+\end{bmatrix}
+$$
+
+Then:
+
+$$
+y = Wx
+$$
+
+produces:
+
+$$
+y=
+\begin{bmatrix}
+1.7 \\
+2.9
+\end{bmatrix}
+$$
+
+---
+
+## Why CNNs Use FC Layers
+
+Convolution layers learn:
+
+- edges
+- textures
+- shapes
+- object parts
+
+The Fully Connected Layer then uses those extracted features to make the final decision.
+
+Example:
+
+```text
+Image
+↓
+Convolution Layers
+↓
+Feature Maps
+↓
+Flatten
+↓
+Fully Connected Layer
+↓
+Class Scores
+```
+
+---
+
+## Flattening
+
+Before entering an FC layer, feature maps are usually flattened.
+
+Example:
+
+Feature map:
+
+$$
+8 \times 8 \times 64
+$$
+
+becomes:
+
+$$
+4096
+$$
+
+dimensional vector.
+
+---
+
+## Number of Parameters
+
+For an FC layer:
+
+Input neurons:
+
+$$
+N
+$$
+
+Output neurons:
+
+$$
+M
+$$
+
+Total weights:
+
+$$
+N \times M
+$$
+
+Total biases:
+
+$$
+M
+$$
+
+Total parameters:
+
+$$
+N \times M + M
+$$
+
+---
+
+## Advantages
+
+- Powerful representation learning.
+- Uses information from the entire feature vector.
+- Effective for final classification.
+
+---
+
+## Disadvantages
+
+- Large number of parameters.
+- High memory consumption.
+- Can easily overfit.
+- Ignores spatial structure.
+
+---
+
+## CNN vs Fully Connected Layer
+
+| Convolution Layer | Fully Connected Layer |
+|------------------|----------------------|
+| Local connections | Global connections |
+| Parameter sharing | No parameter sharing |
+| Preserves spatial information | Loses spatial information |
+| Few parameters | Many parameters |
+| Feature extraction | Classification |
+
+---
+
+## NAS-Relevant Insight
+
+In Neural Architecture Search, FC layers can be optimized by varying:
+
+- Number of FC layers
+- Hidden dimensions
+- Activation functions
+- Dropout rates
+
+Many modern architectures reduce or completely remove large FC layers because they contribute a significant portion of the total parameter count.
