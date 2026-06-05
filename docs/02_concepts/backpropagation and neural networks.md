@@ -15,7 +15,7 @@ the above graph is the example of a linear classifier
 - regularization term R(W)
 - and the total loss L
 
-The adv is that once we can express a function using a computational graph then we can use a technique back propagation which is going to recursively use the chain rule in order to compute the gradient with respect to every variable in the computational graph.
+The advantage is that once we can express a function using a computational graph then we can use a technique back propagation which is going to recursively use the chain rule in order to compute the gradient with respect to every variable in the computational graph.
 
 
 ## How does back propagation work ?

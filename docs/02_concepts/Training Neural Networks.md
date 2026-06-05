@@ -1006,3 +1006,1035 @@ class TwoLayerNet(object):
 
 
 ```
+
+---
+---
+
+# CS231n Lecture 7 — Training Neural Networks Part 2
+
+## Overview
+
+This lecture focuses on:
+
+1. Optimization Algorithms
+2. Regularization Techniques
+3. Transfer Learning
+
+Goal:
+
+```text
+Reduce Training Error
++
+Improve Generalization
+```
+
+---
+
+# Optimization
+
+## Vanilla Gradient Descent
+
+Update rule:
+
+$$
+W \leftarrow W - \eta \nabla_W L
+$$
+
+Where:
+
+- $W$ = parameters
+- $\eta$ = learning rate
+- $\nabla_W L$ = gradient of loss
+
+Pseudo-code:
+
+```python
+while True:
+    grad = compute_gradient(loss, W)
+    W -= learning_rate * grad
+```
+
+---
+
+## Problems with SGD
+
+### 1. Poor Conditioning
+
+Loss surface may look like a narrow valley.
+
+```text
+Steep in one direction
+Flat in another
+```
+
+Result:
+
+```text
+Oscillation
++
+Slow convergence
+```
+
+---
+
+### 2. Saddle Points
+
+A saddle point:
+
+```text
+Gradient = 0
+Not a minimum
+```
+
+SGD may get stuck or move very slowly.
+
+Important:
+
+```text
+In high-dimensional spaces,
+saddle points are much more common
+than local minima.
+```
+
+---
+
+### 3. Noisy Gradients
+
+Mini-batches only estimate the true gradient.
+
+Instead of:
+
+$$
+\nabla L
+$$
+
+we get:
+
+$$
+\nabla \hat L
+$$
+
+which contains noise.
+
+Result:
+
+```text
+Jittery updates
+Slow convergence
+```
+
+---
+
+# SGD with Momentum
+
+## Idea
+
+Instead of following only the current gradient:
+
+```text
+Remember previous gradients.
+```
+
+Build velocity.
+
+---
+
+## Update Rule
+
+Velocity:
+
+$$
+v_{t+1} = \rho v_t - \eta \nabla L(W_t)
+$$
+
+Parameter update:
+
+$$
+W_{t+1}=W_t+v_{t+1}
+$$
+
+---
+
+## Intuition
+
+Imagine a ball rolling downhill.
+
+```text
+Gradient
+→ direction
+
+Momentum
+→ speed
+```
+
+Benefits:
+
+- Faster convergence
+- Reduces oscillation
+- Escapes shallow minima
+- Handles noisy gradients
+
+---
+
+## Typical Values
+
+```python
+momentum = 0.9
+```
+
+or
+
+```python
+momentum = 0.99
+```
+
+---
+
+# Nesterov Momentum
+
+## Motivation
+
+Momentum can overshoot.
+
+Nesterov:
+
+```text
+Look ahead first
+Then compute gradient
+```
+
+---
+
+## Update
+
+Compute gradient at the future position.
+
+$$
+v_{t+1}
+=
+\rho v_t
+-
+\eta \nabla f(W_t+\rho v_t)
+$$
+
+---
+
+## Benefit
+
+More informed update.
+
+Usually:
+
+```text
+Slightly better than momentum
+```
+
+---
+
+# AdaGrad
+
+## Idea
+
+Use different learning rates for different parameters.
+
+Frequently updated parameters:
+
+```text
+Smaller learning rate
+```
+
+Rarely updated parameters:
+
+```text
+Larger learning rate
+```
+
+---
+
+## Update
+
+Accumulate squared gradients:
+
+$$
+G_t = G_{t-1}+g_t^2
+$$
+
+Update:
+
+$$
+W_t
+=
+W_{t-1}
+-
+\frac{\eta g_t}
+{\sqrt{G_t}+\epsilon}
+$$
+
+---
+
+## Problem
+
+Accumulated gradients keep growing.
+
+Therefore:
+
+$$
+\sqrt{G_t}
+\rightarrow \infty
+$$
+
+Learning rate:
+
+$$
+\rightarrow 0
+$$
+
+Eventually learning stops.
+
+---
+
+# RMSProp
+
+## Idea
+
+Fix AdaGrad.
+
+Instead of storing all history:
+
+```text
+Use moving average
+of squared gradients.
+```
+
+---
+
+## Update
+
+$$
+G_t
+=
+\rho G_{t-1}
++
+(1-\rho)g_t^2
+$$
+
+Parameter update:
+
+$$
+W_t
+=
+W_{t-1}
+-
+\frac{\eta g_t}
+{\sqrt{G_t}+\epsilon}
+$$
+
+---
+
+## Benefits
+
+- Adaptive learning rates
+- Doesn't decay forever
+- Works well in practice
+
+---
+
+# Adam
+
+## Most Popular Optimizer
+
+Adam combines:
+
+```text
+Momentum
++
+RMSProp
+```
+
+---
+
+## First Moment
+
+Momentum estimate:
+
+$$
+m_t
+=
+\beta_1 m_{t-1}
++
+(1-\beta_1)g_t
+$$
+
+---
+
+## Second Moment
+
+Squared gradient estimate:
+
+$$
+v_t
+=
+\beta_2 v_{t-1}
++
+(1-\beta_2)g_t^2
+$$
+
+---
+
+## Bias Correction
+
+Because estimates start at zero:
+
+$$
+\hat m_t
+=
+\frac{m_t}
+{1-\beta_1^t}
+$$
+
+$$
+\hat v_t
+=
+\frac{v_t}
+{1-\beta_2^t}
+$$
+
+---
+
+## Final Update
+
+$$
+W_t
+=
+W_{t-1}
+-
+\eta
+\frac{\hat m_t}
+{\sqrt{\hat v_t}+\epsilon}
+$$
+
+---
+
+## Stanford Recommendation
+
+Good default:
+
+```python
+beta1 = 0.9
+beta2 = 0.999
+lr = 1e-3
+```
+
+or
+
+```python
+lr = 5e-4
+```
+
+A great starting point for most models. :contentReference[oaicite:1]{index=1}
+
+---
+
+# Learning Rate Decay
+
+## Why?
+
+Large learning rate:
+
+```text
+Fast progress
+```
+
+Near optimum:
+
+```text
+Need smaller steps
+```
+
+---
+
+## Methods
+
+### Step Decay
+
+```text
+Reduce LR every few epochs
+```
+
+Example:
+
+```python
+lr *= 0.5
+```
+
+---
+
+### Exponential Decay
+
+$$
+lr_t
+=
+lr_0 e^{-kt}
+$$
+
+---
+
+### 1/t Decay
+
+$$
+lr_t
+=
+\frac{lr_0}{1+t}
+$$
+
+---
+
+## Practical Advice
+
+More important for:
+
+```text
+SGD
+Momentum
+```
+
+Less critical for:
+
+```text
+Adam
+```
+
+---
+
+# First vs Second Order Optimization
+
+## First Order
+
+Uses:
+
+$$
+\nabla L
+$$
+
+Examples:
+
+- SGD
+- Momentum
+- RMSProp
+- Adam
+
+---
+
+## Second Order
+
+Uses:
+
+$$
+\nabla L
++
+H
+$$
+
+where:
+
+$$
+H
+=
+\text{Hessian Matrix}
+$$
+
+---
+
+## Newton's Method
+
+Update:
+
+$$
+W
+=
+W-H^{-1}\nabla L
+$$
+
+Advantage:
+
+```text
+No learning rate
+```
+
+---
+
+## Why Not Use It?
+
+Deep networks have:
+
+```text
+Millions of parameters
+```
+
+Hessian size:
+
+$$
+O(N^2)
+$$
+
+Inversion:
+
+$$
+O(N^3)
+$$
+
+Too expensive.
+
+---
+
+## L-BFGS
+
+Approximate second-order method.
+
+Works well:
+
+```text
+Full batch
+Deterministic optimization
+```
+
+Not ideal:
+
+```text
+Mini-batch training
+```
+
+---
+
+## Practical Recommendation
+
+Stanford:
+
+```text
+Adam is usually the best default.
+```
+
+If full-batch training is possible:
+
+```text
+Try L-BFGS.
+```
+
+---
+
+# Model Ensembles
+
+## Idea
+
+Train multiple models.
+
+At test time:
+
+```text
+Average predictions.
+```
+
+---
+
+## Benefit
+
+Typically:
+
+```text
+~2% performance gain
+```
+
+---
+
+## Snapshot Ensembles
+
+Instead of training many networks:
+
+```text
+Save checkpoints
+from one network.
+```
+
+Use them as ensemble members.
+
+---
+
+## Polyak Averaging
+
+Keep running average of weights:
+
+$$
+W_{avg}
+=
+\frac1T
+\sum_t W_t
+$$
+
+Use averaged weights at test time.
+
+---
+
+# Regularization
+
+Goal:
+
+```text
+Reduce Overfitting
+```
+
+---
+
+## L2 Regularization
+
+Weight decay.
+
+Loss:
+
+$$
+L
+=
+L_{data}
++
+\lambda \sum W^2
+$$
+
+Effect:
+
+```text
+Encourages small weights
+```
+
+---
+
+## L1 Regularization
+
+Loss:
+
+$$
+L
+=
+L_{data}
++
+\lambda \sum |W|
+$$
+
+Effect:
+
+```text
+Sparse weights
+```
+
+---
+
+## Elastic Net
+
+Combination:
+
+$$
+L1 + L2
+$$
+
+---
+
+# Dropout
+
+## Idea
+
+Randomly remove neurons during training.
+
+---
+
+## Example
+
+Dropout rate:
+
+```python
+p = 0.5
+```
+
+Each neuron:
+
+```text
+50% chance active
+50% chance removed
+```
+
+---
+
+## Why It Works
+
+Prevents:
+
+```text
+Co-adaptation
+```
+
+Network cannot rely on specific neurons.
+
+Learns redundant robust features.
+
+---
+
+## Ensemble Interpretation
+
+Every dropout mask:
+
+```text
+A different network
+```
+
+Training performs implicit model averaging.
+
+---
+
+## Test Time
+
+All neurons active.
+
+Need scaling:
+
+$$
+output_{test}
+=
+E[output_{train}]
+$$
+
+---
+
+## Inverted Dropout
+
+Modern implementation.
+
+Scale during training.
+
+Result:
+
+```text
+No scaling needed at test time.
+```
+
+---
+
+# Data Augmentation
+
+## Goal
+
+Artificially increase dataset size.
+
+---
+
+## Horizontal Flips
+
+```text
+Cat → Mirrored Cat
+```
+
+Label unchanged.
+
+---
+
+## Random Crops
+
+Randomly sample image regions.
+
+Improves robustness.
+
+---
+
+## Random Scaling
+
+Resize image before cropping.
+
+---
+
+## Color Jitter
+
+Random:
+
+- Brightness
+- Contrast
+- Color
+
+---
+
+## Advanced Augmentation
+
+- Rotation
+- Translation
+- Shearing
+- Stretching
+- Lens Distortion
+
+Stanford advice:
+
+```text
+Get creative.
+```
+
+---
+
+# Common Regularization Pattern
+
+Training:
+
+```text
+Add randomness
+```
+
+Testing:
+
+```text
+Average out randomness
+```
+
+Examples:
+
+- Dropout
+- BatchNorm
+- Data Augmentation
+
+---
+
+# Transfer Learning
+
+## Motivation
+
+Training CNNs from scratch:
+
+```text
+Needs lots of data
+```
+
+Transfer learning solves this.
+
+---
+
+## Step 1
+
+Train on large dataset.
+
+Example:
+
+```text
+ImageNet
+```
+
+---
+
+## Step 2
+
+Reuse learned features.
+
+Replace final classifier.
+
+---
+
+## Small Dataset
+
+Freeze:
+
+```text
+Convolution layers
+```
+
+Train:
+
+```text
+New classifier layer
+```
+
+---
+
+## Larger Dataset
+
+Fine-tune:
+
+```text
+Last few layers
+```
+
+---
+
+## Very Large Dataset
+
+Fine-tune:
+
+```text
+Many layers
+```
+
+Use lower learning rate:
+
+```python
+new_lr = old_lr / 10
+```
+
+---
+
+# Practical Transfer Learning Rules
+
+| Dataset Similarity | Dataset Size | Strategy |
+|----------|----------|----------|
+| Similar | Small | Linear classifier on top |
+| Similar | Large | Fine-tune few layers |
+| Different | Small | Difficult problem |
+| Different | Large | Fine-tune many layers |
+
+---
+
+# Why Transfer Learning Matters
+
+Transfer learning is the default approach today.
+
+Applications:
+
+- Object Detection
+- Image Captioning
+- Medical Imaging
+- Autonomous Driving
+- Remote Sensing
+
+---
+
+# Final Takeaways
+
+## Optimization
+
+Know:
+
+- SGD
+- Momentum
+- Nesterov
+- AdaGrad
+- RMSProp
+- Adam
+
+Adam is the best default.
+
+---
+
+## Regularization
+
+Know:
+
+- L1
+- L2
+- Dropout
+- Data Augmentation
+
+---
+
+## Transfer Learning
+
+Know:
+
+```text
+Pretrain
+↓
+Freeze
+↓
+Fine-tune
+```
+
+This is the most important practical technique in modern deep learning.
+

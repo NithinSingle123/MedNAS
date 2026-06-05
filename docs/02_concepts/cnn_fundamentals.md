@@ -1123,8 +1123,260 @@ Future NAS systems may optimize:
 
 because architecture design strongly affects:
 # learned feature representations.
+---
 
+# Softmax Classifier
+## Understanding Softmax Intuitively
 
+Let's start with the problem Softmax is solving.
+
+Suppose your network outputs:
+
+```python
+scores = [3.2, 5.1, -1.7]
+```
+
+What do these mean?
+
+Honestly: **nothing yet**.
+
+All we know is:
+
+- Class 0 got score 3.2
+- Class 1 got score 5.1
+- Class 2 got score -1.7
+
+But can we say:
+
+> There is an 80% chance it's Class 1
+
+No.
+
+Because:
+
+- 3.2 is not a probability
+- 5.1 is not a probability
+- -1.7 is definitely not a probability
+
+Probabilities must satisfy:
+
+$$
+0 \le P \le 1
+$$
+
+and
+
+$$
+\sum_i P_i = 1
+$$
+
+Our scores satisfy neither.
+
+Therefore Softmax asks:
+
+> Can I turn these arbitrary scores into probabilities?
+
+For example:
+
+```python
+scores = [3.2, 5.1, -1.7]
+```
+
+should become something like:
+
+```python
+probs = [0.13, 0.86, 0.01]
+```
+
+Now we can say:
+
+- 13% Cat
+- 86% Car
+- 1% Frog
+
+which actually makes sense.
+
+---
+
+### Naive Attempt
+
+Suppose we simply divide by the total:
+
+```python
+scores = [3.2, 5.1, -1.7]
+sum = 6.6
+```
+
+giving:
+
+```python
+[0.48, 0.77, -0.25]
+```
+
+Problem:
+
+> Negative probability!
+
+Impossible.
+
+---
+
+### Softmax Solution
+
+Softmax first applies the exponential function:
+
+$$
+e^x
+$$
+
+Why?
+
+Because exponentials are always positive.
+
+For our scores:
+
+```python
+scores = [3.2, 5.1, -1.7]
+```
+
+we get:
+
+$$
+[e^{3.2}, e^{5.1}, e^{-1.7}]
+$$
+
+approximately:
+
+```python
+[24.5, 164.0, 0.18]
+```
+
+Notice:
+
+> Everything is positive now.
+
+---
+
+### Normalize into Probabilities
+
+Add everything:
+
+$$
+24.5 + 164.0 + 0.18 = 188.68
+$$
+
+Now divide each value by the total:
+
+$$
+\frac{24.5}{188.68}=0.13
+$$
+
+$$
+\frac{164.0}{188.68}=0.87
+$$
+
+$$
+\frac{0.18}{188.68}=0.001
+$$
+
+Result:
+
+```python
+[0.13, 0.87, 0.001]
+```
+
+Properties:
+
+- No negative values
+- Values lie between 0 and 1
+- Sum equals 1
+
+Therefore:
+
+```python
+[0.13, 0.87, 0.001]
+```
+
+is a valid probability distribution.
+
+---
+
+### Softmax Formula
+
+$$
+\text{Softmax}(s_i)
+=
+\frac{e^{s_i}}
+{\sum_j e^{s_j}}
+$$
+
+Interpretation:
+
+1. Convert every score into a positive number using $e^x$
+2. Divide by the total
+3. Obtain probabilities
+
+Result:
+
+> Arbitrary scores → Probability distribution
+
+---
+
+### Connecting Softmax to Labels
+
+Suppose:
+
+```python
+scores = [3.2, 5.1, -1.7]
+```
+
+becomes:
+
+```python
+probs = [0.13, 0.87, 0.001]
+```
+
+and the true label is:
+
+```python
+y = 1
+```
+
+which means:
+
+> Class 1 is the correct class.
+
+Looking at:
+
+```python
+probs = [0.13, 0.87, 0.001]
+```
+
+we have:
+
+| Class | Probability |
+|---------|---------|
+| 0 | 0.13 |
+| 1 | 0.87 ← Correct Class |
+| 2 | 0.001 |
+
+The loss function only cares about:
+
+$$
+P(\text{correct class})
+=
+0.87
+$$
+
+because `y = 1`.
+
+This idea leads directly to Softmax Loss:
+
+$$
+L_i
+=
+-\log\left(P(\text{correct class})\right)
+$$
 
 
 
