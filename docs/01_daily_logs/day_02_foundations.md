@@ -1,13 +1,12 @@
-
 # MedNAS — Day 2 Foundations
 
-**Date:** [Fill Date]
+**Date:** [7-06-2026]
 
 **Phase:** Phase 1 — NAS Foundations
 
 ## Primary Goal
 
-Learn how architectures are represented and create configurable CNN architectures that can later be searched automatically.
+Learn how neural architectures are represented and build a configurable CNN architecture generator that can later be searched automatically by NAS algorithms.
 
 ---
 
@@ -19,16 +18,18 @@ Learn how architectures are represented and create configurable CNN architecture
 
 - Architecture Encoding
     
-- Search Space
+- Search Space Representation
     
 - Layer Representation
     
-- Hyperparameters
+- Hyperparameter Representation
+    
+- Architecture Genotypes
     
 
 ### Key Understanding
 
-Neural architectures must be represented in a machine-readable format before NAS can search them.
+Neural architectures must be represented in a machine-readable format before NAS algorithms can search, compare, mutate, or optimize them.
 
 ### Resource Used
 
@@ -49,6 +50,8 @@ Neural architectures must be represented in a machine-readable format before NAS
 
 - Fixed Search Spaces
     
+- Layer-wise Search Spaces
+    
 - Cell-Based Search Spaces
     
 - Operation Choices
@@ -58,7 +61,7 @@ Neural architectures must be represented in a machine-readable format before NAS
 
 ### Key Understanding
 
-NAS does not search every possible network. It searches inside a predefined search space.
+NAS does not search all possible neural networks. It searches only within a carefully designed search space that defines which architectures are allowed.
 
 ### Resource Used
 
@@ -81,10 +84,14 @@ NAS does not search every possible network. It searches inside a predefined sear
     
 - Total Model Size
     
+- Computational Cost
+    
+- Model Complexity
+    
 
 ### Key Understanding
 
-Model complexity is one of the objectives NAS often optimizes.
+Parameter count is often treated as an optimization objective alongside accuracy because larger models require more memory and computation.
 
 ### Resource Used
 
@@ -105,11 +112,15 @@ Model complexity is one of the objectives NAS often optimizes.
 
 ### Tasks Completed
 
-- Configurable channels
+- Configurable number of convolution layers
+    
+- Configurable channel counts
     
 - Configurable kernel sizes
     
-- Configurable number of layers
+- Configurable pooling strategy
+    
+- Automatic architecture generation from configuration
     
 
 ### Files Worked On
@@ -130,16 +141,41 @@ mininas/models/cnn_builder.py
 
 ### Tasks Completed
 
-Create architecture representation such as:
+Create architecture representations such as:
 
 [(Conv,32,3),  
 (Conv,64,3),  
 (Pool),  
 (FC,128)]
 
+Represent architectures using Python lists, dictionaries, or custom classes that can later be used by NAS algorithms.
+
 ### Files Worked On
 
 mininas/search_space/encoding.py
+
+### Observations
+
+[Write here]
+
+---
+
+## Search Space Generator
+
+### Tasks Completed
+
+- Define possible channel values
+    
+- Define possible kernel sizes
+    
+- Define possible layer depths
+    
+- Generate candidate architectures
+    
+
+### Files Worked On
+
+mininas/search_space/search_space.py
 
 ### Observations
 
@@ -155,6 +191,8 @@ mininas/search_space/encoding.py
     
 - Display model size
     
+- Compare architecture complexity
+    
 
 ### Files Worked On
 
@@ -166,6 +204,8 @@ mininas/utils/model_stats.py
     
 - Model Size
     
+- Layer-wise Parameter Distribution
+    
 
 ---
 
@@ -173,9 +213,11 @@ mininas/utils/model_stats.py
 
 ## Questions Explored
 
-- Which architecture parameters matter most?
+- Which architecture parameters affect accuracy most?
     
-- Why is search space design important?
+- Why is search space design critical in NAS?
+    
+- How large should a search space be?
     
 - What makes an architecture efficient?
     
@@ -200,6 +242,8 @@ mininas/utils/model_stats.py
     
 - Activation Functions
     
+- Hidden Dimensions
+    
 
 ## First NAS Search Space Draft
 
@@ -222,7 +266,9 @@ Example:
 
 - Dynamic CNN Builder
     
-- Architecture Encoding
+- Architecture Encoding System
+    
+- Search Space Generator
     
 - Parameter Counter
     
@@ -238,6 +284,8 @@ Example:
 - Accuracy vs Model Size tradeoff
     
 - Fitness functions
+    
+- Introduction to NSGA-II
     
 
 ---

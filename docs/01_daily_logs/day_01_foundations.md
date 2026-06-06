@@ -35,164 +35,215 @@ CNNs preserve spatial relationships unlike fully connected layers.
 
 ---
 
-## Concept 2 — Forward Pass
+## ## Concept 2 — Forward Pass
 
 ### Topics Covered
-- Layer-by-layer transformation
-- Activations
-- Representation learning
+
+- Affine (Fully Connected) Layers
+    
+- Matrix Multiplication
+    
+- ReLU Activation
+    
+- Score Computation
+    
+- Softmax Probabilities
+    
 
 ### Key Understanding
-The forward pass defines how information flows through the network.
+
+The forward pass transforms input data into class scores through a sequence of mathematical operations. Each layer extracts increasingly useful representations until the final layer produces scores for each class.
 
 ### Resource Used
-- [Paste resource link]
+
+- Stanford CS231n Lecture 4
+    
+- Stanford CS231n Assignment 1
+    
 
 ### Notes
-[Your understanding]
+
+Implemented the complete forward pass of a two-layer neural network from scratch using NumPy.
+
+Architecture:
+
+Input  
+→ Affine Layer (W1, b1)  
+→ ReLU  
+→ Affine Layer (W2, b2)  
+→ Scores  
+→ Softmax  
+→ Probabilities
+
+Learned how matrix multiplication propagates information through layers and how ReLU introduces non-linearity.
 
 ---
 
 ## Concept 3 — Backpropagation
 
 ### Topics Covered
-- Loss calculation
-- Gradients
-- Weight updates
-- `optimizer.step()`
+
+- Computational Graphs
+    
+- Chain Rule
+    
+- Gradient Flow
+    
+- Affine Layer Backward Pass
+    
+- ReLU Backward Pass
+    
+- Softmax + Cross Entropy Derivative
+    
+- Numerical Gradient Checking
+    
+- SGD Updates
+    
 
 ### Key Understanding
-Backpropagation adjusts model weights to reduce prediction error.
+
+Backpropagation computes gradients of the loss with respect to every parameter in the network by repeatedly applying the chain rule backwards through the computational graph.
 
 ### Resource Used
-- [Paste resource link]
+
+- Stanford CS231n Lecture 4
+    
+- Stanford CS231n Assignment 1
+    
 
 ### Notes
-[Your understanding]
+
+Learned that gradients multiply along a path and add across multiple paths.
+
+Key result:
+
+# $$  
+dscores
+
+# \frac{\partial L}{\partial scores}
+
+probs - \text{one-hot}(y)  
+$$
+
+Successfully implemented:
+
+- dW1
+    
+- db1
+    
+- dW2
+    
+- db2
+    
+- ReLU backward
+    
+- Softmax backward
+    
+- L2 Regularization gradients
+    
+
+Verified correctness through numerical gradient checking with relative errors on the order of 1e-9.
 
 ---
 
-# 2. Implementation Work
-
-## CIFAR-10 Pipeline
-
-### Tasks Completed
-- Dataset loading
-- DataLoader setup
-- Transform setup
-
-### Files Worked On
-```text
-mininas/training/dataset.py
-```
-
-### Problems Faced
-Faced some syntax issue 
-Issues related to the compatibility of pytorch and matplotlib
-
-### Solutions
-enabled virtual environment to deal with it and now it works fine
-
----
-
-## 2 layer Neural network implementation
-
-
----
-## Baseline CNN
+## 2 Layer Neural Network Implementation
 
 ### Architecture
-- Conv2D
-- ReLU
-- MaxPool
-- Linear Layer
 
-### Files Worked On
-```text
-mininas/models/cnn_builder.py
-```
+Input  
+→ Affine Layer (W1, b1)  
+→ ReLU  
+→ Affine Layer (W2, b2)  
+→ Softmax
 
-### Observations
-- Tensor shapes changed after pooling
-- Channel depth increased representational capacity
+### Tasks Completed
+
+- Forward pass implementation
+    
+- Softmax loss implementation
+    
+- L2 regularization
+    
+- Full backpropagation implementation
+    
+- Numerical gradient checking
+    
+- Mini-batch sampling
+    
+- SGD parameter updates
+    
+- Prediction function implementation
+    
+
+### Key Debugging Milestones
+
+- Fixed forward pass returning None
+    
+- Implemented Softmax probability computation
+    
+- Understood derivation of dscores
+    
+- Fixed regularization mismatch causing gradient check failures
+    
+- Implemented SGD updates correctly
+    
+
+### Final Results
+
+Gradient Check Results:
+
+W1 max relative error: 3.56e-09
+
+b1 max relative error: 2.74e-09
+
+W2 max relative error: 3.44e-09
+
+b2 max relative error: 4.45e-11
+
+Training loss reduced from approximately 1.25 to 0.017, confirming successful learning.
 
 ---
-
-## Training Loop
-
-### Components Implemented
-- Forward pass
-- Loss calculation
-- Backpropagation
-- Optimizer step
-
-### Files Worked On
-```text
-mininas/training/train.py
-```
-
-### Metrics Observed
-- Training loss
-- Accuracy
-- Training time
-
----
-
-# 3. Research Intuition Developed
-
-## Questions Explored
-- Why do deeper CNNs learn better representations?
-- Why does pooling reduce computation?
-- Which architecture properties could NAS optimize?
 
 ## Important Thoughts
-[Write your own ideas]
+
+Deeper CNNs likely learn better representations because successive layers build increasingly abstract features from lower-level patterns.
+
+NAS can potentially optimize architectural choices such as kernel size, channel count, number of layers, pooling strategies, and hidden dimensions while balancing accuracy, parameter count, and training cost.
 
 ---
-
-# 4. Architecture/NAS Thinking
-
-## NAS-Relevant Observations
-- Kernel size is tunable
-- Channel count affects parameters
-- Pooling changes feature dimensions
-
-## Potential Search Space Components
-- Number of convolution layers
-- Kernel sizes
-- Channel sizes
-- Pooling strategies
-
----
-
-# 5. GitHub Progress
-
-## Commits Made
-- Initialized MedNAS repository
-- Added project structure
-- Implemented CIFAR-10 pipeline
-
----
-
-# 6. Tomorrow's Objectives
-
-- Understand configurable architectures
-- Build dynamic CNN builder
-- Learn architecture representation
-- Explore parameter counting
-
----
-
-# 7. Daily Reflection
 
 ## What I Understood Well
-[Write here]
+
+- Forward propagation
+    
+- ReLU activations
+    
+- Chain rule intuition
+    
+- Gradient flow through computational graphs
+    
+- Softmax loss
+    
+- SGD parameter updates
+    
+- Gradient checking
+    
 
 ## What Confused Me
-[Write here]
+
+- Jacobians versus practical backpropagation
+    
+- Why gradients add at branching nodes
+    
+- Derivation of Softmax + Cross Entropy gradients
+    
+- Relationship between regularization loss and regularization gradients
+    
 
 ## Biggest Technical Insight Today
-[Write here]
+
+Backpropagation is not magic. It is simply repeated application of the chain rule through a computational graph. Once dscores is computed, the remaining gradients systematically propagate through the network.
 
 ## Biggest Mistake Today
-[Write here]
+
+Initially implemented the regularization loss incorrectly, which caused large gradient-check errors for W1 and W2. Fixing the mismatch between the regularization loss term and its derivative reduced errors to approximately 1e-9.
