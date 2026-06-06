@@ -1630,3 +1630,140 @@ Massive speed improvement
 Result:
 Mini-Batch SGD wins
 ```
+
+
+# TODO — SGD Parameter Update
+
+## Objective
+
+Use the gradients computed during backpropagation to update the network parameters using Stochastic Gradient Descent (SGD).
+
+### Theory
+
+SGD updates parameters according to:
+
+# $$  
+W_{new}
+
+W - \eta \frac{\partial L}{\partial W}  
+$$
+
+where:
+
+- (W) = parameter
+    
+- (\eta) = learning rate
+    
+- (\frac{\partial L}{\partial W}) = gradient
+
+
+The gradient points in the direction of increasing loss, so we subtract it to move toward lower loss.
+
+### Implementation
+
+```python
+self.params['W1'] -= learning_rate * grads['W1']
+self.params['b1'] -= learning_rate * grads['b1']
+self.params['W2'] -= learning_rate * grads['W2']
+self.params['b2'] -= learning_rate * grads['b2']
+```
+
+### Key Insight
+
+```text
+Current Parameters
+        ↓
+Compute Gradients
+        ↓
+Move Opposite Gradient Direction
+        ↓
+Updated Parameters
+```
+
+## This completes the learning step of the neural network.
+
+# TODO — Predict Function
+
+## Objective
+
+Given an input X, predict the class label for each sample.
+
+### Theory
+
+Prediction does not require:
+
+- Loss computation
+    
+- Backpropagation
+    
+- Gradients
+
+
+It only requires a forward pass followed by selecting the class with the highest score.
+
+### Architecture
+
+```text
+Input
+↓
+Affine Layer (W1,b1)
+↓
+ReLU
+↓
+Affine Layer (W2,b2)
+↓
+Scores
+↓
+argmax
+↓
+Predicted Class
+```
+
+### Implementation
+
+```python
+hidden = np.dot(X, self.params['W1']) + self.params['b1']
+hidden = np.maximum(0, hidden)
+
+scores = np.dot(hidden, self.params['W2']) + self.params['b2']
+
+y_pred = np.argmax(scores, axis=1)
+```
+
+### Why argmax?
+
+Example:
+
+```python
+scores = [2.1, 5.4, 1.7]
+```
+
+Largest score:
+
+```text
+5.4
+```
+
+Index:
+
+```text
+1
+```
+
+Prediction:
+
+```python
+y_pred = 1
+```
+
+### Key Insight
+
+```text
+Training:
+Forward → Loss → Backprop → Update
+
+Prediction:
+Forward → argmax
+```
+
+The predict function is intentionally simple because all learning has already happened during training.
