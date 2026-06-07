@@ -1012,6 +1012,98 @@ class TwoLayerNet(object):
 
 # CS231n Lecture 7 — Training Neural Networks Part 2
 
+# Before you dive
+
+**1. What is the color spectrum kind of images where there are squiggly lines ??**
+Here the spectrum represents nothing but the graphical representation of loss incurred whose values are being projected on the graph (Loss vs Time). (Loss = f(parameters)).
+
+**2. Here what are we updating ?**
+Here we are updating the parameters of the neural network:
+```
+W1
+b1
+W2
+b2
+```
+
+Intuition: The process that lies in between the state where you have found all the gradients and the state in which you update the weights.
+```
+Forward Pass
+    ↓
+  Loss
+    ↓
+Backpropagation
+    ↓
+Gradients Found
+    ↓
+Optimization Algorithm
+    ↓
+Updated Parameters
+```
+~ The gradients tell us the story of how much the loss and then the optimization algorithm decides as to what to do with the existing parameters corresponding to their gradients
+
+**3. As you progress further into the lesson you will realize that the optimization algorithms are being asked to find a minima, question is what is a minima and why are we trying to find it?**
+First of all these optimization algorithms are trying to find the parameter values for the network which are producing the lowest loss.
+
+So if you remember, initially, W1 = random, b1 = random, W2 = random, b2 = random, these were randomly taken so the initial predictions of the network are terrible.
+
+Minima is simply the smallest possible loss possible 
+```
+      /\        High Loss
+     /  \
+    /    \
+   /      \
+  /        \
+ /          \
+/____________\   Low Loss
+
+The optimizer wants to reach the bottom of the valley
+Bottom of valley = Lowest loss = Best predictions
+```
+
+Here is the crazy part, our assignment had:
+```
+W1 = 4×10 = 40 params
+b1 = 10 params
+W2 = 10×3 = 30 params
+b2 = 3 params
+```
+which comes to a total of 83 DIMENSIONS. Meaning the optimizer is actually moving in an 83 dimensional space.
+*these math formulas are functions that promise to strive in these conditions and reach a point where the loss when calculated is less*
+
+The thing to remember here is that the optimizer is not searching images, classes or neurons, instead, it is searching for a good set of numbers inside W1, b1, W2, b2
+
+Forward Pass
+    ↓
+  Loss
+    ↓
+Backpropagation
+    ↓
+Gradients Found
+    ↓
+Optimization Algorithm
+    ↓
+Updated Parameters
+
+**4. 
+a. does the terrain of the graph change every time the parameters and gradients in turn are changed?
+b. does the optimization algorithm make only one guess for the set of parameters for one whole pass or is it searching for the best minima for the given whole pass no matter the time taken?
+c. when and how do you know to stop, what if there is no minima at all?**
+The answer to question a. is, No, the loss landscape does not change but what changes is your position on the landscape.
+
+The answer to question b. is, No, and this is probably the biggest misconception people have. The optimizer is not doing a global search. It does not sit there thinking "lemme find the best minimum first", instead it takes one step per iteration.
+What it never knows is that:
+```
+Where the global minimum is.
+
+Whether a better valley exists elsewhere.
+
+Whether it is trapped.
+```
+
+The answer to question c. is that we don't stop when we find the minimum because we don't know where the minimum is.
+Instead we stop using practical rules like a limit of 100 epochs or when the gradient is very less meaning you are probably near the minimum and for the next part of the question, there is usually no single perfect minimum. There possibly hundreds of thousands of or even billions of minima but the essence of this process is not to find the best minima but to find a good minima.
+
 ## Overview
 
 This lecture focuses on:
@@ -1054,8 +1146,6 @@ while True:
     W -= learning_rate * grad
 ```
 
----
-
 ## Problems with SGD
 
 ### 1. Poor Conditioning
@@ -1075,8 +1165,6 @@ Oscillation
 Slow convergence
 ```
 
----
-
 ### 2. Saddle Points
 
 A saddle point:
@@ -1095,8 +1183,6 @@ In high-dimensional spaces,
 saddle points are much more common
 than local minima.
 ```
-
----
 
 ### 3. Noisy Gradients
 
@@ -1137,23 +1223,20 @@ Remember previous gradients.
 
 Build velocity.
 
----
+# **SGD** 
+# $$ x_{t+1} = x_t - \alpha\nabla f(x_t)$$
+```python
+while True:
+	dx = compute_gradient(x)
+	x += learning_rate * dx
+```
 
-## Update Rule
+# **SGD + MOMENTUM**
+# $$v_{t+1} = \rho v_t + \nabla f(x_t)$$
+# $$x_{t+1} = x_t - \alpha v_{t+1}$$
+Here, the idea is that we maintain a velocity overtime and we add our gradient estimate to the velocity and then we step in the direction of velocity instead of direction of the gradient
 
-Velocity:
-
-$$
-v_{t+1} = \rho v_t - \eta \nabla L(W_t)
-$$
-
-Parameter update:
-
-$$
-W_{t+1}=W_t+v_{t+1}
-$$
-
----
+here, rho is a hyperparameter that corresponding to the friction. At every time step we decay our current velocity by rho. and then we add in our gradient
 
 ## Intuition
 
@@ -1179,13 +1262,13 @@ Benefits:
 ## Typical Values
 
 ```python
-momentum = 0.9
+RHO = 0.9
 ```
 
 or
 
 ```python
-momentum = 0.99
+RHO = 0.99
 ```
 
 ---
@@ -1203,24 +1286,19 @@ Look ahead first
 Then compute gradient
 ```
 
----
 
 ## Update
 
 Compute gradient at the future position.
 
-$$
-v_{t+1}
-=
-\rho v_t
--
-\eta \nabla f(W_t+\rho v_t)
-$$
+# $$v_{t+1} = \rho v_t + \nabla f(x_t+\rho v_t)$$
+# $$x_{t+1} = x_t - v_{t+1}$$
 
----
+![[Pasted image 20260607170102.png]]
 
-## Benefit
+# Benefit
 
+Here you step in the direction of the velocity first and then calculate gradient direction to move in the net direction and the thing is here you can cover for any inconsistencies in velocity
 More informed update.
 
 Usually:
@@ -1228,6 +1306,18 @@ Usually:
 ```text
 Slightly better than momentum
 ```
+
+*THE GOOD INITIALIZATION FOR VELOCITY IS ALMOST ALWAYS ZERO*
+
+- INTUITIVELY THE VELOCITY IS KIND OF A WEIGHTED SUM OF YOUR GRADIENTS YOU HAVE SEEN OVER TIME WITH THE MOST RECENT ONES WEIGHTED HEAVIER
+---
+![[Pasted image 20260607170341.png]]
+
+Here you can see how the performance of all the three is when they are going for a minima, sgd normal slowly follows whereas moomentum and nesterov shoot up further recorrecting themselves to reach the minima.
+
+Here the question arises as to what happens if the minima is not flat and in a very sharp basin and the recorrection might be hard to make resulting momentum and nesterov skipping the minima.
+
+The answer to this question is that may be that minima, could be the minima overfits more, if you imagine we doubled our training set, the whole optimization landscape would change and the minima would disappear. we want flat minimas because they are supposed to be more robust in nature.
 
 ---
 
@@ -1249,8 +1339,6 @@ Rarely updated parameters:
 Larger learning rate
 ```
 
----
-
 ## Update
 
 Accumulate squared gradients:
@@ -1270,7 +1358,6 @@ W_{t-1}
 {\sqrt{G_t}+\epsilon}
 $$
 
----
 
 ## Problem
 
@@ -1328,8 +1415,6 @@ W_{t-1}
 \frac{\eta g_t}
 {\sqrt{G_t}+\epsilon}
 $$
-
----
 
 ## Benefits
 
