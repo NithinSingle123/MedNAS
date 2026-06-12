@@ -6,4 +6,5 @@ venv/
 venv/
 mininas/training/data/
 *.tar.gz
-.obsidian/
+.obsidian/workspace.json
+.obsidian/workspaces.json

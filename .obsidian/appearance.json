@@ -1,0 +1,14 @@
+{
+  "cssTheme": "Maple",
+  "theme": "obsidian",
+  "accentColor": "#585df3",
+  "showViewHeader": true,
+  "showRibbon": false,
+  "textFontFamily": "",
+  "monospaceFontFamily": "",
+  "baseFontSize": 15,
+  "baseFontSizeAction": true,
+  "enabledCssSnippets": [
+    "theme"
+  ]
+}
