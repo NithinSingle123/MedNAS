@@ -374,3 +374,457 @@ The key insight of the slide is that the final hidden layer acts as a learned em
 You can do the same for upper layers as well
 
 
+## Visualizing Activations
+
+Here we can also visualize activations of intermediary layers to try and understand what is going on...
+
+![[Pasted image 20260613043130.png]]
+
+so here you can see a convolution run through a web cam to try and identify what is infront of it. In this case it is the face of the person sitting infront of the camera.
+
+- Now you will notice here that there is nothing significant in the grid and its all noisy but there is one highlighted visualized activation which seems to be trying to light up and identify the face of the person sitting infront of the camera.
+
+**Are the black activations dead ReLUs??**
+And the answer is no, dead ReLUs are something that are out of use for the whole network but in this case they are not dead they are just not active for the given input.
+
+## Maximally Activating Patches
+
+![[Screenshot 2026-06-13 043811.png]]
+
+Maximally Activating Patches
+
+The idea behind maximal activation visualization is to understand what a particular neuron or feature map inside a CNN has learned to detect. Instead of visualizing the filter weights directly, we observe which image regions cause the strongest activation of that neuron.
+
+Suppose we choose a particular layer in the network, for example Conv5. If Conv5 contains 128 feature maps of size 13 × 13, we may select a specific channel, such as channel 17. This channel represents one learned feature detector.
+
+Next, thousands of images are passed through the trained network. For every image, the activation values produced by channel 17 are recorded. Since the feature map is 13 × 13, each location corresponds to a specific receptive field in the original image. Some locations will produce higher activations than others.
+
+The patches of the original images that generate the largest activation values are then extracted and visualized. These extracted regions are called maximally activating patches because they correspond to inputs that most strongly excite the selected feature detector.
+
+If the selected feature map has learned to detect eyes, then the maximally activating patches will mostly contain eyes from different animals and objects. If it has learned wheel-like structures, then the highest-activation patches will contain wheels, circular objects, camera lenses, and other similar patterns. If it has learned text-like features, the patches will contain letters, signs, logos, and printed text.
+
+The images shown on the right side of the slide are examples of maximally activating patches. Each grid corresponds to a different neuron or feature map. Notice that although the patches come from different images, many of them share a common visual pattern. One neuron appears to respond strongly to eyes, another to circular objects such as wheels and camera lenses, another to text and letters, and another to animal faces. This indicates that the network has automatically learned specialized detectors without being explicitly programmed.
+
+This method is powerful because it provides evidence of what a neuron actually responds to in practice. Weight visualization tells us what pattern the filter prefers mathematically, while maximal activation visualization shows real-world image regions that trigger the neuron most strongly. Since deeper layers learn increasingly complex concepts, this technique is often much easier to interpret than visualizing the raw filter weights.
+
+The overall procedure is:
+
+1. Select a layer and a feature map (channel).
+2. Pass many images through the network.
+3. Record activation values of the chosen channel.
+4. Find the locations with the highest activations.
+5. Map those activations back to the corresponding image patches.
+6. Visualize the patches.
+7. Infer the visual concept that the neuron has learned.
+
+This technique demonstrates that deep CNNs gradually evolve from detecting simple edges and textures in early layers to detecting object parts, faces, eyes, wheels, text, and other high-level semantic concepts in deeper layers.
+
+The key insight of this slide is:
+
+```
+Weight Visualization:
+"What pattern does the filter mathematically want?"
+
+Maximally Activating Patches:
+"What real image regions actually make the filter fire?"
+```
+
+## Occlusion Experiments
+
+![[Screenshot 2026-06-13 044409.png]]
+
+- So what we wanna do here is figure out which parts of the input image caused the network to make its classification decision. So what we will do is take our input image and then we will block out some part of that image and just replace it with the mean pixel value from the dataset.
+- So the idea here is that when plot a heat graph for the scores, if for a case of occlusion in the image the scores change drastically then that part was really important for the classification decision.
+
+## Saliency Map
+
+![[Screenshot 2026-06-13 045121.png]]
+
+Saliency Maps are a visualization technique used to identify which pixels in an input image most influence a CNN's prediction.
+
+The idea is to compute the gradient of the class score with respect to every input pixel. Pixels with larger gradient magnitudes are considered more important because small changes in those pixels would significantly affect the prediction.
+
+Procedure:
+1. Pass an image through the network.
+2. Select the score of the predicted class (or any target class).
+3. Compute the gradient of that score with respect to the input image.
+4. Visualize the magnitude of the gradients as a heatmap.
+
+Bright regions in the saliency map indicate areas that the network considers most important for making its decision.
+
+Unlike maximal activation patches, which show what a neuron generally responds to across many images, saliency maps explain why the network made a specific prediction for a particular image.
+
+![[Screenshot 2026-06-13 045455.png]]
+
+- can be used for semantic segmentation
+
+![[Screenshot 2026-06-13 045716.png]]
+
+## Intermediate Features via (guided) backprop
+
+![[Screenshot 2026-06-13 045935.png]]
+
+- What happens is that here you tweak the process of backpropagation and change you backpropagate through the non linearites
+- So in this case while backpropagating you are supposed let only positive values through the non linearities and ignore negative (only keeping track of positive influences)
+
+Doing this makes the images we get more highlighted and with more clarity as to which parts of the image affect the score more...
+
+![[Screenshot 2026-06-13 050313.png]]
+
+## Gradient Ascent
+
+![[Screenshot 2026-06-13 050526.png]]
+
+Saliency Maps vs Gradient Ascent
+
+Saliency maps ask:
+"Given a real image, which pixels caused the neuron to activate?"
+
+Gradient ascent asks:
+"Forget real images. What image would I have to create to make this neuron activate as much as possible?"
+
+Think about it this way.
+Suppose you have a neuron that you suspect detects dog faces.
+How do you verify it?
+
+One way is to show it thousands of images and see which ones activate it the most.
+
+Another way is to ask the neuron directly:
+"Show me your dream image."
+
+That is exactly what gradient ascent does.
+
+ #### Step 1: Start with Random Noise 
+
+Imagine creating an image like:
+
+▓▒░▓▒░▓  
+░▓▒░▓▒░  
+▒░▓▒░▓▒
+
+This is pure random garbage.
+Feed this image into the CNN.
+Suppose the chosen neuron produces an activation value:
+
+f(I) = 5
+
+#### Step 2: Compute the Gradient
+
+Calculate:
+
+∂f/∂I
+
+This gradient tells us:
+- Which pixels should become brighter
+- Which pixels should become darker
+
+to increase the neuron's activation.
+
+#### Step 3: Modify the Image
+
+During normal training we update the weights:
+
+Weights ← Weights − η∇Loss
+
+In gradient ascent we freeze all network weights and instead update the image itself:
+
+Image ← Image + η∇f(I)
+
+This is called Gradient Ascent because we are maximizing the neuron's activation rather than minimizing a loss.
+
+Repeat Many Times
+
+Random Noise  
+↓  
+Slight Pattern  
+↓  
+Recognizable Shape  
+↓  
+Neuron's Preferred Image
+
+After hundreds of iterations the image gradually evolves into a pattern that strongly excites the neuron.
+
+Eventually we obtain an image that makes the neuron extremely happy.
+
+What is f(I)?
+
+f(I) represents the activation value of the chosen neuron when image I is fed into the network.
+
+Higher value of f(I) means:
+- Stronger neuron response
+- Greater neuron activation
+
+Therefore our objective is:
+
+Maximize f(I)
+
+Why Do We Need R(I)?
+
+If we only maximize f(I), the optimizer quickly discovers strange tricks.
+
+The resulting image often becomes:
+- High-frequency noise
+- Random textures
+- Unnatural patterns
+
+that humans cannot interpret.
+
+The neuron may love the image, but it looks like nonsense to us.
+
+For example, TV static may activate a neuron more strongly than a real dog image.
+
+To prevent this, we introduce a regularizer:
+
+R(I)
+
+The role of R(I) is to:
+
+- Reduce noise
+- Encourage smoothness
+- Produce more natural-looking images
+- Prevent optimization from exploiting unrealistic patterns
+
+Intuition of the Full Objective
+
+I* = argmax_I (f(I) + R(I))
+
+Read this as:
+
+"Find the image I* that simultaneously:
+1. Maximally activates the neuron
+2. Still looks reasonably natural"
+
+Deep Intuition
+Imagine interviewing a neuron.
+
+Saliency Maps ask:
+"Why did you like THIS image?"
+
+Gradient Ascent asks:
+"If you could design your own image, what would it look like?"
+
+The generated image is essentially:
+- The neuron's imagination
+- The neuron's dream image
+- The neuron's ideal input
+
+By studying this image we gain insight into the visual concept that the neuron has learned.
+
+Summary
+
+Saliency Maps:  
+Given a real image, identify which pixels influenced the prediction.
+
+Gradient Ascent:  
+Generate a synthetic image that maximally activates a neuron.
+
+Saliency Maps explain:  
+"Why did the neuron respond?"
+
+Gradient Ascent explains:  
+"What does the neuron want to see?"
+
+This is why gradient ascent is one of the most powerful techniques for visualizing and understanding the internal representations learned by deep CNNs.
+
+**The question here might arise how the hell does one change the image altogether instead of weights??**
+
+The trick is:
+```
+In gradient ascent,the image itself becomes the variable.
+```
+
+Normally in training:
+```
+Image (fixed)      
+↓
+CNN      
+↓
+Prediction      
+↓
+LossUpdate Weights
+```
+
+The image never changes.
+
+In gradient ascent:
+```
+Image (variable)      
+↓
+CNN (fixed)      
+↓
+Neuron Activation
+
+Update Image
+```
+
+The weights are frozen.
+The image becomes the thing being optimized.
+
+Let's use a tiny example.
+
+Suppose the image is just:
+```
+I =[100  50]
+   [ 20 200]
+```
+
+Pixel values.
+Feed it into the network.
+
+Suppose the neuron activation is:
+```
+f(I) = 5
+```
+
+Now compute:
+```
+∂f/∂I
+```
+
+Suppose we get:
+```
+[+3  -2]
+[+1  -4]
+```
+
+This means:
+```
+Pixel (1,1):Increase it
+Pixel (1,2):Decrease it
+Pixel (2,1):Increase it slightly
+Pixel (2,2):Decrease it strongly
+```
+
+Update the image:
+```
+Image ← Image + η∂f/∂I
+```
+
+If:
+```
+η = 1
+```
+
+then:
+```
+Old Image[100  50]
+         [ 20 200]
+         
+         +
+
+Gradient[+3  -2]
+		[+1  -4]
+
+		 =
+
+New Image[103  48]
+		 [ 21 196]
+```
+
+The image has literally changed.
+
+Feed the new image again:
+
+```
+New Image      
+↓
+CNN      
+↓
+f(I) = 8
+```
+
+Activation increased.
+Good.
+Repeat.
+
+**The reason this works is because, in math an image is just a big vector of numbers.**
+
+![[Pasted image 20260613052708.png]]
+
+![[Pasted image 20260613052742.png]]
+
+![[Pasted image 20260613052837.png]]
+
+![[Pasted image 20260613052920.png]]
+
+## Fooling Images/ Adversarial Examples
+
+![[Pasted image 20260613053543.png]]
+
+![[Pasted image 20260613053510.png]]
+
+- So what happens here is that for example we take an example of an elephant ask the network to modify the image to represent it under some other class like a koala bear. Now some might thing during this process the elephant would start morphing and then sprout cute ears at the end.
+- But in reality what happens is the same image is classified as an image.
+
+## Deep Dream: Amplify existing features
+
+![[Screenshot 2026-06-15 220148.png]]
+
+```python
+def objective_L2(dat):
+	dat.diff[:] = dat.data
+	
+def make_step(not, step_size=1.5, end = 'inception_4c/output', jitter=32, clip=True, objective=objective_L2):
+	'''Basic gradient ascent step.'''
+	
+	src = net.blobe['data'] # input image is stored in Nets's 'data' blob
+	dat = net.blobe[end]
+	
+	ox, oy = np.random.randint(-jitter, jitter+1, 2)
+	src.data[0] = np.roll(np.roll(arc.data[0], ox, -1), oy, -2) # apply jitter shift
+	
+	net.forward(end=end)
+	objective(dat) # specify the optimization objective
+	net.backward(start=end)
+	g = src.diff[0]
+	# apply normalized ascent step to the input image # L1 Normalize gradients
+	src.data[:] += step_size/np.abs(g).mean() * g
+	
+	src.data[0] = np.roll(np.roll(src.data[0], -ox, -1), -oy, -2) # unshift image
+	
+	if clip:
+		bias = net.transfomrer.mean['data']
+		arc.data[:] = np.clip(src.data, -bias, 255-bias)
+```
+
+Code is very simple but it uses couple of tricks:
+1. Jittering image before you compute your gradients
+	- So here what happens here is, rather than running the exact image through the network instead you will shift the image over by two pixels and kind of wrap the other two pixels over here. And this is a kind of regularize to prevent each of these, it regularizes a little bit to encourage a little bit of extra special smoothness in the image
+
+2. L1 Normalize gradients
+	- Its a kind of a useful trick sometimes when doing the image generation problems
+
+3. Clipping the pixel values once in a while
+	- images should actually be between zero to 2.55, so this is a kind of projected gradients descent where we project on to the space of actual valid images. But now when we do all this and start with the image of a sky then the end product gives you dream like figures appearing all over the sky..
+
+![[Pasted image 20260615233228.png]]
+
+**This tells us that the model was trained on more categories of dogs**
+
+![[Pasted image 20260615233420.png]]
+
+This is a lower level interpretation of deep dream in its lower layers trying to find edges or corners and stuff like that through those swirls...
+
+**IF YOU RUN THIS THING FOR A LONG TIME AND ADD IN SO MULTISCALE PROCESSING YOU GET SOME REALLY INTERESTING AND CRAZY IMAGES**
+
+![[Pasted image 20260615233703.png]]
+
+The code for deep dream is online by google you can make your own versions
+
+## Feature Inversion
+
+- gives a sense what types of elements of image are captured in different layers
+
+![[Pasted image 20260615234103.png]]
+
+![[Pasted image 20260615234207.png]]
+
+
+## Texture Synthesis
+
+- Here the idea is that we are give an input of patch of texture, we want to build some model and generate a larger piece of that same texture.
+
+![[Pasted image 20260615234416.png]]
+
+# COME BACK TO THIS LATER
+
