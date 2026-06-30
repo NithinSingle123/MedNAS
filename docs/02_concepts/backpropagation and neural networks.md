@@ -10,7 +10,7 @@ We can use this kind of graphs to represent any function where the nodes of the 
 the above graph is the example of a linear classifier
 
 - here the inputs are x and w
-- and then this multiplication node represents the matrix multiplication of f with w outputting the vector of scores
+- and then this multiplication node represents the matrix multiplication of x with w outputting the vector of scores
 - hinge loss computing data loss term Li
 - regularization term R(W)
 - and the total loss L
