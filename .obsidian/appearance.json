@@ -6,7 +6,7 @@
   "showRibbon": false,
   "textFontFamily": "",
   "monospaceFontFamily": "",
-  "baseFontSize": 15,
+  "baseFontSize": 16,
   "baseFontSizeAction": true,
   "enabledCssSnippets": [
     "theme"
