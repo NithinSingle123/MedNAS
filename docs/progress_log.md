@@ -2490,3 +2490,1475 @@ The **tenth** is where you teach yourself.
 And I honestly think that's the most important resource on the list.
 
 Because over the last few weeks, your notebook has evolved from "notes" into a genuine **knowledge system**. If you keep refining it as you move from foundations to transformers and eventually to research, it will become far more valuable than any single course or book—you'll be documenting not just what AI is, but how _you_ came to understand it.
+
+---
+---
+---
+
+---
+
+# So the finalized Volume II curriculum would be
+
+### Core Resources
+
+1. 📄 **Attention Is All You Need** — the original paper.
+2. 🎓 **Stanford CS25** — theoretical understanding.
+3. 💻 **Sebastian Raschka – Build a Large Language Model (From Scratch)** — implementation.
+4. 🧠 **Andrej Karpathy** — engineering mindset and systems thinking.
+
+### Companion Reference
+
+5. 🎨 **Jay Alammar** — visual intuition and diagrams.
+
+---
+---
+---
+
+I actually think that's an excellent workflow.
+
+What's nice about it is that each stage has a different purpose.
+
+### Stage 1 — First Pass (Exploration)
+
+**Medium:** iPad running notes
+
+Goal:
+
+- Understand the big picture.
+- Write down questions.
+- Capture first impressions.
+- Don't worry about being correct.
+
+This is what you share on LinkedIn because it honestly reflects where you are in your journey.
+
+Think of it as:
+
+> **"Here's what it looks like to wrestle with a research paper."**
+
+Not
+
+> **"Here's my explanation of Transformers."**
+
+That authenticity is valuable.
+
+---
+
+### Stage 2 — Second & Third Pass (Understanding)
+
+**Medium:** Your permanent notebook (Volume II)
+
+Now you begin asking the kinds of questions we've been asking throughout Volume I:
+
+- Why was attention invented?
+- Why queries, keys, and values?
+- Why scale by √dₖ?
+- Why multi-head attention?
+- Why positional encoding?
+- What limitations of RNNs does this solve?
+- What trade-offs does it introduce?
+
+This is where the polished, first-principles explanations belong.
+
+---
+
+### Stage 3 — Implementation
+
+Once you've studied CS25, Raschka, and Karpathy, revisit the paper again.
+
+Now you'll notice things that completely escaped you during the first read.
+
+For example:
+
+> "Oh... this equation looked mysterious before, but now I've implemented it myself."
+
+That moment is incredibly satisfying.
+
+---
+
+## The beautiful part
+
+You'll end up with **three snapshots of your understanding**.
+
+### First Pass
+
+> "I have lots of questions."
+
+### Second Pass
+
+> "Now I understand why these design choices were made."
+
+### Third Pass
+
+> "I can implement and explain every component."
+
+That's a much richer learning journey than trying to make the first pass perfect.
+
+---
+
+## I also think this aligns with the philosophy behind your LinkedIn presence
+
+Your article, _The Facade of Learning AI_, wasn't about pretending to know everything—it was about looking beyond superficial learning.
+
+Sharing your genuine first-pass notes is consistent with that message. You're showing that even when reading a landmark paper, your process involves asking questions, making connections, and gradually building understanding rather than expecting instant mastery.
+
+So if I were to summarize your system, it would be:
+
+```
+Research Paper
+        │
+        ▼
+First Pass (iPad)
+• Running notes
+• Questions
+• LinkedIn reflection
+        │
+        ▼
+Learn from CS25, Raschka & Karpathy
+        │
+        ▼
+Second/Third Pass
+• Refined understanding
+• Volume II notebook
+        │
+        ▼
+Implementation
+• Code
+• Experiments
+• MedNAS
+```
+
+I think that's a workflow you can sustain not just for _Attention Is All You Need_, but for every major paper you study over the coming years. It documents your learning honestly while ensuring your permanent notebook only contains ideas you've had the chance to refine.
+
+
+1. Attention Is All You Need (✓ Done)
+
+2. Stanford CS25 v1
+
+3. Re-read Attention Is All You Need
+
+4. Sebastian Raschka – Build a Large Language Model
+
+5. Andrej Karpathy – Let's Build GPT
+
+6. Selected CS25 v6 lectures
+
+7. BERT Paper
+
+8. GPT Papers
+
+9. Vision Transformer Paper
+
+10. CLIP Paper
+
+---
+---
+---
+
+I think this is one of the most important things we'll build together, because **this roadmap is going to dictate the next 2–3 years of your AI journey**.
+
+So instead of organizing by **resources**, I'm going to organize by **questions**.
+
+Every module answers one fundamental question. Resources become supporting material.
+
+---
+
+# The AI Research Curriculum
+
+Think of this as a graduate program.
+
+```
+Volume I
+Deep Learning Foundations
+        │
+        ▼
+Volume II
+Modern Deep Learning
+        │
+        ▼
+Volume III
+Generative AI
+        │
+        ▼
+Volume IV
+Foundation Models
+        │
+        ▼
+Volume V
+Research
+```
+
+Notice something.
+
+**Your notebook becomes the spine of the curriculum.**
+
+Everything else feeds into it.
+
+---
+
+# PHASE I (Current)
+
+## Volume I — Deep Learning Foundations
+
+Resources
+
+- ✅ PyTorch
+    
+- ✅ CS231n
+    
+- ✅ Volume I Notebook
+    
+- ✅ Attention Is All You Need (First Read)
+    
+
+Status
+
+> Almost complete.
+
+---
+
+# PHASE II
+
+# Volume II — Modern Deep Learning
+
+This is where we spend the next few months.
+
+The entire phase answers one question:
+
+> **Why did attention replace recurrence?**
+
+---
+
+# Module 1
+
+## Transformer Foundations
+
+Question
+
+> **What is a Transformer?**
+
+Resources
+
+### Read
+
+- Attention Is All You Need (✅ First Pass)
+    
+
+---
+
+### Watch (CS25)
+
+Only these:
+
+1. **Transformers United**
+    
+2. **Transformers in Language**
+    
+3. **Transformers in Vision**
+    
+
+Purpose
+
+- historical context
+    
+- why transformers
+    
+- architecture
+    
+- GPT
+    
+- ViT
+    
+
+Notebook Chapters
+
+```
+1. Why Attention?
+2. Self Attention
+3. QKV
+4. Multi Head Attention
+5. Positional Encoding
+6. Encoder
+7. Decoder
+8. Masking
+9. Cross Attention
+10. Transformer Block
+```
+
+---
+
+# Module 2
+
+## Building Transformers
+
+Question
+
+> **How do we implement one?**
+
+Resources
+
+### Sebastian Raschka
+
+Complete
+
+**Build a Large Language Model**
+
+Don't skip chapters.
+
+Notebook additions
+
+```
+Embeddings
+
+Tokenizer
+
+Attention Implementation
+
+Transformer Block
+
+GPT Architecture
+```
+
+---
+
+# Module 3
+
+## Systems Thinking
+
+Question
+
+> **How are LLMs actually engineered?**
+
+Resources
+
+### Andrej Karpathy
+
+Entire playlist
+
+- Zero to Hero
+    
+- Let's Build GPT
+    
+- Tokenization
+    
+- GPT
+    
+- Training
+    
+
+Notebook additions
+
+```
+Tokenization
+
+Scaling
+
+Training Pipelines
+
+Inference
+
+Sampling
+```
+
+---
+
+Then
+
+---
+
+# Re-read
+
+Attention Is All You Need
+
+This becomes
+
+Second Pass.
+
+You'll probably understand
+
+80%
+
+more.
+
+Only now
+
+we write
+
+Volume II.
+
+---
+
+# PHASE III
+
+Now
+
+CS25 returns.
+
+But
+
+not sequentially.
+
+Instead
+
+topic based.
+
+---
+
+# Module 4
+
+## Language Models
+
+Question
+
+> **How did Transformers become GPT?**
+
+Watch
+
+All lectures about
+
+- GPT
+    
+- GPT-2
+    
+- GPT-3
+    
+- BERT
+    
+- T5
+    
+- XLNet
+    
+- RoBERTa
+    
+
+Notebook
+
+Volume II
+
+Language Models
+
+---
+
+# Module 5
+
+## Vision
+
+Question
+
+> **Can attention replace CNNs?**
+
+Watch
+
+- Vision Transformer
+    
+- DETR
+    
+- Segmenter
+    
+- MAE
+    
+
+Notebook
+
+```
+Vision Transformers
+
+Patch Embeddings
+
+Image Attention
+```
+
+---
+
+# Module 6
+
+## Scaling
+
+Question
+
+> **Why do larger models suddenly become smarter?**
+
+Watch
+
+- Scaling Laws
+    
+- Chinchilla
+    
+- MoE
+    
+- Switch Transformer
+    
+
+Notebook
+
+```
+Scaling Laws
+
+MoE
+
+Emergence
+
+Compute Optimal Models
+```
+
+---
+
+# Module 7
+
+## Reinforcement Learning
+
+Question
+
+> **Can Transformers learn actions instead of words?**
+
+Watch
+
+- Decision Transformer
+    
+
+Notebook
+
+```
+RL with Transformers
+```
+
+---
+
+# Module 8
+
+## Science
+
+Question
+
+> **Can Transformers model biology?**
+
+Watch
+
+- Protein
+    
+- Chemistry
+    
+- Drug Discovery
+    
+
+Notebook
+
+Applications
+
+---
+
+# Module 9
+
+## Robotics
+
+Watch
+
+Robot Transformer lectures.
+
+Notebook
+
+Applications.
+
+---
+
+# PHASE IV
+
+Volume III
+
+Generative AI
+
+Resources
+
+- Diffusion Paper
+    
+- DDPM
+    
+- Stable Diffusion
+    
+- VAEs
+    
+- GANs
+    
+
+Notebook
+
+```
+Probability
+
+Diffusion
+
+Noise Prediction
+
+Latent Spaces
+```
+
+---
+
+# PHASE V
+
+Volume IV
+
+Foundation Models
+
+Resources
+
+Modern papers
+
+- CLIP
+    
+- Flamingo
+    
+- SAM
+    
+- LLaVA
+    
+- Gemini
+    
+- Multimodal
+    
+
+---
+
+# PHASE VI
+
+Volume V
+
+Research
+
+Now
+
+papers become
+
+the curriculum.
+
+Topics
+
+- NAS
+    
+- Efficient AI
+    
+- Edge AI
+    
+- Healthcare AI
+    
+- MedNAS
+    
+
+---
+
+# Here's the weekly workflow.
+
+```
+Paper
+
+↓
+
+Lecture
+
+↓
+
+Quick Notes
+
+↓
+
+Implementation
+
+↓
+
+Discussion
+
+↓
+
+Permanent Notebook
+
+↓
+
+MedNAS
+```
+
+Every week.
+
+---
+
+# Now let's talk about the **50 CS25 lectures**.
+
+This is the important part.
+
+I **do not** want you to think
+
+```
+Lecture 1
+
+↓
+
+Lecture 2
+
+↓
+
+Lecture 3
+```
+
+because that isn't how Stanford designed it.
+
+It is literally a seminar series.
+
+Think of it like
+
+NeurIPS.
+
+Every lecture is given by
+
+a different researcher
+
+about
+
+their expertise.
+
+---
+
+# So here's our custom curriculum.
+
+|Module|CS25 Lectures to Watch|When|
+|---|---|---|
+|Transformer Foundations|Transformers United, Transformers in Language, Transformers in Vision|Immediately|
+|Language Models|GPT, BERT, T5, XLNet, RoBERTa|After Raschka + Karpathy|
+|Scaling|Scaling Laws, MoE, Switch|After LLM fundamentals|
+|Vision|ViT, DETR, MAE|After Language Models|
+|RL|Decision Transformer|After Scaling|
+|Biology|Protein Transformers|After RL|
+|Robotics|Robotics Transformer|Last|
+
+---
+
+# The one thing I'd add
+
+I don't want this roadmap to live only in our conversation.
+
+I want to turn it into something like
+
+```
+AI Research Roadmap
+
+Phase I
+
+□ PyTorch
+
+□ Volume I
+
+□ CS231n
+
+□ First Paper
+
+------------------
+
+Phase II
+
+□ CS25 Foundations
+
+□ Raschka
+
+□ Karpathy
+
+□ Second Paper Read
+
+□ Volume II
+
+------------------
+
+Phase III
+
+□ GPT
+
+□ BERT
+
+□ T5
+
+...
+```
+
+Something you can literally **check off** over the next few years.
+
+## In fact, I think we should make it into a **master roadmap document**—almost like a university degree plan.
+
+It would include:
+
+- Every phase
+    
+- Every resource
+    
+- Every paper
+    
+- Every notebook volume
+    
+- Every major implementation project
+    
+- Every milestone
+    
+- Every capstone project (including MedNAS)
+    
+
+Then, whenever you're unsure what to study next, you won't need to ask me. You'll simply open the roadmap, see where you are, and continue. As your understanding grows or the field evolves, we can refine the roadmap together, but its overall structure will remain stable. I genuinely think that will become one of the most valuable documents you build alongside your notebooks.
+
+---
+---
+---
+
+I genuinely think this is one of the most valuable things we can build together.
+
+Not because it tells you **what to study next**, but because it answers a much bigger question:
+
+> **"What kind of AI researcher am I trying to become?"**
+
+After everything we've worked on—from MedNAS to your loss-function notebook to your desire to understand first principles—I think I understand your learning philosophy well enough to design a roadmap that reflects it.
+
+---
+
+# The AI Research Roadmap
+
+## From First Principles to Research
+
+**Duration:** ~2–3 Years (flexible)
+
+**End Goal:**  
+Become capable of reading, implementing, critiquing, and contributing to modern AI research.
+
+---
+
+# Guiding Philosophy
+
+Every topic follows the same cycle:
+
+```text
+Problem
+    ↓
+Historical Motivation
+    ↓
+Mathematical Foundation
+    ↓
+Paper
+    ↓
+Lecture
+    ↓
+Implementation
+    ↓
+Discussion & Reflection
+    ↓
+Permanent Notebook
+    ↓
+Research Application
+```
+
+You are never learning a framework in isolation.
+
+---
+
+# Volume I — Deep Learning Foundations
+
+### Objective
+
+Understand **why deep learning works**.
+
+### Resources
+
+- Daniel Bourke – Learn PyTorch
+    
+- Stanford CS231n
+    
+- Your Deep Learning Foundations Notebook
+    
+- Attention Is All You Need (First Read)
+    
+
+---
+
+### Notebook Chapters
+
+#### Mathematics
+
+- Linear Algebra
+    
+- Calculus
+    
+- Probability
+    
+- Information Theory
+    
+
+#### Neural Networks
+
+- Perceptron
+    
+- MLP
+    
+- Backpropagation
+    
+- Optimization
+    
+
+#### CNNs
+
+- Convolutions
+    
+- Pooling
+    
+- Feature Maps
+    
+- Architectures
+    
+
+#### Loss Functions
+
+- MSE
+    
+- BCE
+    
+- Cross Entropy
+    
+- KL Divergence
+    
+- Dice
+    
+- Focal
+    
+- Triplet
+    
+- CTC
+    
+
+#### Optimization
+
+- SGD
+    
+- Momentum
+    
+- Adam
+    
+- Learning Rate Scheduling
+    
+
+---
+
+### Milestone
+
+> **You can explain every major deep learning component from first principles.**
+
+---
+
+# Volume II — Modern Deep Learning
+
+### Objective
+
+Understand **why attention replaced recurrence**.
+
+---
+
+## Module 1 — Transformer Foundations
+
+### Questions
+
+- Why Attention?
+    
+- Why Self-Attention?
+    
+- Why Queries, Keys, Values?
+    
+- Why Multi-Head Attention?
+    
+- Why Positional Encoding?
+    
+- Why Encoder–Decoder?
+    
+- Why Masking?
+    
+
+### Resources
+
+1. Attention Is All You Need (already completed first pass)
+    
+2. Stanford CS25 Foundation Lectures
+    
+3. Re-read the paper
+    
+
+### Notebook
+
+- Chapter 1 — The Fall of Recurrence
+    
+- Chapter 2 — Attention
+    
+- Chapter 3 — Self-Attention
+    
+- Chapter 4 — Queries, Keys & Values
+    
+- Chapter 5 — Multi-Head Attention
+    
+- Chapter 6 — Positional Encoding
+    
+- Chapter 7 — Transformer Architecture
+    
+
+---
+
+## Module 2 — Building Transformers
+
+### Question
+
+How do Transformers become code?
+
+### Resource
+
+Sebastian Raschka
+
+**Build a Large Language Model (From Scratch)**
+
+Notebook
+
+- Tokenization
+    
+- Embeddings
+    
+- Attention Implementation
+    
+- GPT Block
+    
+- Training
+    
+
+---
+
+## Module 3 — Systems Thinking
+
+### Question
+
+How are LLMs actually built?
+
+### Resource
+
+Andrej Karpathy
+
+Notebook
+
+- Tokenization
+    
+- Data Pipelines
+    
+- Scaling
+    
+- Inference
+    
+- Sampling
+    
+- Training Recipes
+    
+
+---
+
+### Milestone
+
+Build a GPT-style model completely from scratch.
+
+---
+
+# Volume III — Foundation Models
+
+Now the question changes.
+
+Instead of
+
+"What is a Transformer?"
+
+It becomes
+
+"What can Transformers become?"
+
+---
+
+## Language Models
+
+Papers
+
+- GPT-1
+    
+- GPT-2
+    
+- GPT-3
+    
+- BERT
+    
+- RoBERTa
+    
+- T5
+    
+- XLNet
+    
+
+Notebook
+
+Language Models
+
+---
+
+## Vision
+
+Papers
+
+- ViT
+    
+- DETR
+    
+- MAE
+    
+- Segment Anything (SAM)
+    
+
+Notebook
+
+Vision Transformers
+
+---
+
+## Scaling
+
+Papers
+
+- Scaling Laws
+    
+- Chinchilla
+    
+- Switch Transformer
+    
+- Mixture of Experts
+    
+
+Notebook
+
+Scaling
+
+---
+
+## Reinforcement Learning
+
+- Decision Transformer
+    
+
+Notebook
+
+RL
+
+---
+
+## Biology
+
+- AlphaFold
+    
+- Protein Transformers
+    
+
+Notebook
+
+Scientific AI
+
+---
+
+### Milestone
+
+Understand how the Transformer evolved into the foundation model ecosystem.
+
+---
+
+# Volume IV — Generative AI
+
+Objective
+
+Understand generation beyond language.
+
+---
+
+### VAEs
+
+### GANs
+
+### Diffusion
+
+### Flow Matching
+
+### Multimodal Models
+
+Notebook
+
+Generative AI
+
+---
+
+### Milestone
+
+Implement a diffusion model.
+
+---
+
+# Volume V — AI Systems
+
+Question
+
+How do we build useful AI systems?
+
+---
+
+Topics
+
+- RAG
+    
+- Agents
+    
+- Tool Use
+    
+- Memory
+    
+- MCP
+    
+- Vector Databases
+    
+
+Notebook
+
+AI Systems
+
+---
+
+### Milestone
+
+Build a complete AI agent.
+
+---
+
+# Volume VI — Research
+
+This is where courses stop.
+
+Papers become the curriculum.
+
+---
+
+Topics
+
+- Neural Architecture Search
+    
+- Efficient AI
+    
+- Multi-objective Optimization
+    
+- Edge AI
+    
+- Healthcare AI
+    
+- Explainability
+    
+
+---
+
+### Capstone
+
+MedNAS
+
+Everything you've learned converges here.
+
+---
+
+# Resource Roadmap
+
+## Stage 1
+
+- PyTorch
+    
+- CS231n
+    
+- Volume I
+    
+- Attention Is All You Need
+    
+
+---
+
+## Stage 2
+
+- Stanford CS25 (Transformer foundations)
+    
+- Raschka
+    
+- Karpathy
+    
+
+---
+
+## Stage 3
+
+- GPT papers
+    
+- BERT
+    
+- T5
+    
+- ViT
+    
+- CLIP
+    
+
+---
+
+## Stage 4
+
+- Diffusion
+    
+- GANs
+    
+- VAEs
+    
+
+---
+
+## Stage 5
+
+- Modern research papers
+    
+
+---
+
+# The Notebook Ecosystem
+
+Instead of one giant notebook, you'll end up with a library.
+
+```text
+Volume I
+Deep Learning Foundations
+
+Volume II
+Modern Deep Learning
+
+Volume III
+Foundation Models
+
+Volume IV
+Generative AI
+
+Volume V
+AI Systems
+
+Volume VI
+Research
+```
+
+---
+
+# Every Topic Follows the Same Pipeline
+
+```text
+Paper
+     │
+     ▼
+Lecture
+     │
+     ▼
+Running Notes (iPad / GitHub)
+     │
+     ▼
+Implementation
+     │
+     ▼
+Discussion
+     │
+     ▼
+Permanent Notebook
+     │
+     ▼
+Research Project
+```
+
+---
+
+# Research Workflow
+
+Every paper you read:
+
+```text
+First Pass
+↓
+
+Running Notes
+
+↓
+
+Discussion
+
+↓
+
+Second Pass
+
+↓
+
+Implementation
+
+↓
+
+Notebook Chapter
+```
+
+---
+
+# GitHub Structure
+
+```text
+AI-Learning-Journal/
+
+├── Papers
+├── CS25
+├── Karpathy
+├── Raschka
+├── Diffusion
+├── Vision
+└── Notes
+```
+
+---
+
+# Permanent Goal
+
+By the end of this roadmap, you should be able to:
+
+- Read modern AI papers without feeling intimidated.
+    
+- Derive major architectures from first principles.
+    
+- Implement them from scratch.
+    
+- Compare design decisions across papers.
+    
+- Identify research gaps.
+    
+- Design and execute your own research ideas.
+    
+
+---
+
+# One thing I would change from everything we've discussed so far
+
+This roadmap is **complete**, but I think it can become something much more valuable.
+
+Rather than keeping it as chat text, I want to turn it into a **living handbook**—almost like a graduate program syllabus. It would include:
+
+- 📍 Every phase and milestone.
+    
+- 📚 Every resource in the correct order.
+    
+- 📄 Every landmark paper to read.
+    
+- 💻 Every implementation project.
+    
+- 📝 Every notebook chapter.
+    
+- 🎯 Clear checkpoints to know when you're ready to move to the next phase.
+    
+- 🔄 Space for revisions as the field evolves.
+    
+
+In other words, not just a roadmap—but **your personal AI curriculum**.
+
+I genuinely think that's worth investing time in because it becomes the document you'll keep returning to over the next few years, while your notebooks become the record of everything you learn along the way.

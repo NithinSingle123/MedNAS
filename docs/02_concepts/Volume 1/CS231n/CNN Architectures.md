@@ -116,7 +116,7 @@ conv 1-1
 
 So the idea behind the inception module is that they wanted to design a good local network topology (think of it as a network within a network and stack a lot of these local networks on top of each other)
 
-![[Screenshot 2026-06-10 000823.png]]
+![[Excalidraw/Assets/Screenshot 2026-06-10 000823.png]]
 
 - What happens here is that they apply filter operations in parallel on input form previous layer:
 	- Multiple receptive field sizes for convolution(1x1, 3x3, 5x5)
