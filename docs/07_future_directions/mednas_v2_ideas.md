@@ -3,3 +3,5 @@
 - and we wont be doing the decision here we would input to get some parameter outputs to decide which loss fn we are going to use, depending on parameters like variance, and stuff
 
 - what if we use the concept of poisson nll to find out the best set fo parameters for the desired architecture
+
+- what if the data we have as both linear and circular data so we put something like an activation condition just like our immune system that works under feverized conditions
